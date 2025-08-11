@@ -136,28 +136,27 @@ const medusaConfig = {
   ],
   plugins: [
   ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
-    resolve: '@rokmohar/medusa-plugin-meilisearch',
-    options: {
-      config: {
-        host: MEILISEARCH_HOST,
-        apiKey: MEILISEARCH_ADMIN_KEY
-      },
-      settings: {
-        products: {
-          type: 'products',
-          enabled: true,
-          fields: ['id', 'title', 'description', 'handle', 'variant_sku', 'thumbnail'],
-          indexSettings: {
-            searchableAttributes: ['title', 'description', 'variant_sku'],
-            displayedAttributes: ['id', 'handle', 'title', 'description', 'variant_sku', 'thumbnail'],
-            filterableAttributes: ['id', 'handle'],
-          },
-          primaryKey: 'id',
+      resolve: '@rokmohar/medusa-plugin-meilisearch',
+      options: {
+        config: {
+          host: MEILISEARCH_HOST,
+          apiKey: MEILISEARCH_ADMIN_KEY
+        },
+        settings: {
+          products: {
+            type: 'products',
+            enabled: true,
+            fields: ['id', 'title', 'description', 'handle', 'variant_sku', 'thumbnail'],
+            indexSettings: {
+              searchableAttributes: ['title', 'description', 'variant_sku'],
+              displayedAttributes: ['id', 'handle', 'title', 'description', 'variant_sku', 'thumbnail'],
+              filterableAttributes: ['id', 'handle'],
+            },
+            primaryKey: 'id',
+          }
         }
       }
-    }
-  }] : []),
-  { resolve: "medusa-variant-images", options: {} }
+    }] : [])
   ]
 };
 
