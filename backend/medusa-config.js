@@ -135,7 +135,7 @@ const medusaConfig = {
     }] : [])
   ],
   plugins: [
-  ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
+    ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
       resolve: '@rokmohar/medusa-plugin-meilisearch',
       options: {
         config: {
@@ -156,11 +156,11 @@ const medusaConfig = {
           }
         }
       }
-    },
-  {
-    resolve: 'medusa-variant-images',
-    options: {},
-  }] : [])
+    }] : []),
+    {
+      resolve: 'medusa-variant-images',
+      options: {},
+    }
   ]
 };
 
