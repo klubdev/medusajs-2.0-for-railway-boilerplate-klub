@@ -156,7 +156,11 @@ const medusaConfig = {
           }
         }
       }
-    }] : [])
+    },
+  {
+    resolve: 'medusa-variant-images',
+    options: {},
+  }] : [])
   ]
 };
 
