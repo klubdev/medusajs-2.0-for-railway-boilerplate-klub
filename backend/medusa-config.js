@@ -132,10 +132,7 @@ const medusaConfig = {
           },
         ],
       },
-    }] : []),
-    {
-      resolve: "./src/modules/wishlist"
-    },
+    }] : [])
   ],
   plugins: [
     ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
@@ -164,6 +161,10 @@ const medusaConfig = {
       resolve: 'medusa-variant-images',
       options: {},
     },
+    {
+      resolve: "medusa-wishlist-plugin",
+      options: {}
+    }
   ]
 };
 
