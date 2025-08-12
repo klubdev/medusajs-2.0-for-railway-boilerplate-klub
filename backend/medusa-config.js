@@ -132,7 +132,10 @@ const medusaConfig = {
           },
         ],
       },
-    }] : [])
+    }] : []),
+    {
+      resolve: "./src/modules/wishlist"
+    },
   ],
   plugins: [
     ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
