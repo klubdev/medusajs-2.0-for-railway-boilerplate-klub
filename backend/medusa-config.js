@@ -162,7 +162,7 @@ const medusaConfig = {
       options: {},
     },
     {
-      resolve: "medusa-wishlist-plugin",
+      resolve: "medusa-plugin-wishlist",
       options: {}
     }
   ]
