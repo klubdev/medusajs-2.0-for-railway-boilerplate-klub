@@ -40,7 +40,6 @@
     "awilix": "^8.0.1",
     "codemirror": "6",
     "jsonwebtoken": "^9.0.2",
-    "medusa-plugin-strapi": "1.0.9-dev",
     "medusa-plugin-wishlist": "^1.1.44",
     "medusajs-launch-utils": "^0.0.17",
     "minio": "^8.0.5",

@@ -160,16 +160,6 @@ const medusaConfig = {
     {
       resolve: "medusa-plugin-wishlist",
       options: {}
-    },
-    {
-      resolve: `medusa-plugin-strapi`,
-      options: {
-        strapi_medusa_user: process.env.STRAPI_MEDUSA_USER,
-        strapi_medusa_password: process.env.STRAPI_MEDUSA_PASSWORD,
-        strapi_url: process.env.STRAPI_SERVER_HOSTNAME,
-        strapi_port: process.env.STRAPI_PORT,
-        strapi_protocol: process.env.STRAPI_PROTOCOL
-      }
     }
   ]
 };
