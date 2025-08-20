@@ -45,7 +45,6 @@
     "minio": "^8.0.5",
     "pg": "^8.16.3",
     "resend": "4.0.1",
-    "strapi-plugin-medusajs": "^5.0.0",
     "ulid": "^2.4.0",
     "zod": "^4.0.17"
   },
