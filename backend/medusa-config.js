@@ -160,6 +160,10 @@ const medusaConfig = {
     {
       resolve: "medusa-plugin-wishlist",
       options: {}
+    },
+     {
+      resolve: "medusa-variant-images",
+      options: {}
     }
   ]
 };
