@@ -185,9 +185,7 @@ const medusaConfig = {
         }
       }
     }] : []),
-    ,
     ...(STRAPI_URL && STRAPI_API_KEY ? [{
-
       resolve: "@devx-commerce/strapi",
       options: {
         base_url: STRAPI_URL,
