@@ -189,8 +189,8 @@ const medusaConfig = {
       resolve: "@devx-commerce/strapi",
       options: {
         base_url: STRAPI_URL,
-        api_key: STRAPI_API_KEY,
-      },
+        api_key: STRAPI_API_KEY
+      }
     }] : []),
     {
       resolve: "medusa-plugin-wishlist",

@@ -115,9 +115,9 @@ const CreateBundledProduct = () => {
       </FocusModal.Trigger>
       <FocusModal.Content>
         <FocusModal.Header>
-          <div className="flex items-center justify-end gap-x-2">
+          <FocusModal.Title>
             <Heading level={"h1"}>Create Bundled Product</Heading>
-          </div>
+          </FocusModal.Title>
         </FocusModal.Header>
         <FocusModal.Body>
           <div className="flex flex-1 flex-col items-center overflow-y-auto">
