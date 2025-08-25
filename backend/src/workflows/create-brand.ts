@@ -12,11 +12,11 @@ import {
 
 
 export type CreateBrandWorkflowInput = {
-    name: string
+    name?: string
 }
 
 export type CreateBrandStepInput = {
-    name: string
+    name?: string
 }
 
 export const createBrandStep = createStep("create-brand-step",

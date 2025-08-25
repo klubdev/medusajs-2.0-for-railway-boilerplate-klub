@@ -7,8 +7,8 @@ type AddBundleToCartWorkflowInput = {
   bundle_id: string
   quantity: number
   items: {
-    item_id: string
-    variant_id: string
+    item_id?: string
+    variant_id?: string
   }[]
 }
 
