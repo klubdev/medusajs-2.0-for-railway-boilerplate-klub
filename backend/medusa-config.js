@@ -15,13 +15,18 @@ import {
   STORE_CORS,
   STRIPE_API_KEY,
   STRIPE_WEBHOOK_SECRET,
+  MOLLIE_API_KEY,
+  MOLLIE_REDIRECT_URL,
+  MEDUSA_URL,
   WORKER_MODE,
   MINIO_ENDPOINT,
   MINIO_ACCESS_KEY,
   MINIO_SECRET_KEY,
   MINIO_BUCKET,
   MEILISEARCH_HOST,
-  MEILISEARCH_ADMIN_KEY
+  MEILISEARCH_ADMIN_KEY,
+  STRAPI_URL,
+  STRAPI_API_KEY
 } from 'lib/constants';
 
 loadEnv(process.env.NODE_ENV, process.cwd());
@@ -132,7 +137,30 @@ const medusaConfig = {
           },
         ],
       },
-    }] : [])
+    }] : []),
+    ...(MOLLIE_API_KEY && MOLLIE_REDIRECT_URL ? [{
+      key: Modules.PAYMENT,
+      resolve: '@medusajs/payment',
+      options: {
+        providers: [
+          {
+            resolve: '@variablevic/mollie-payments-medusa/providers/mollie',
+            id: 'mollie',
+            options: {
+              apiKey: MOLLIE_API_KEY,
+              redirectUrl: MOLLIE_REDIRECT_URL,
+              medusaUrl: MEDUSA_URL,
+            },
+          },
+        ],
+      },
+    }] : []),
+    {
+      resolve: "./src/modules/bundled-product",
+    },
+    {
+      resolve: "./src/modules/brand",
+    }
   ],
   plugins: [
     ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
@@ -156,6 +184,15 @@ const medusaConfig = {
           }
         }
       }
+    }] : []),
+    ,
+    ...(STRAPI_URL && STRAPI_API_KEY ? [{
+
+      resolve: "@devx-commerce/strapi",
+      options: {
+        base_url: STRAPI_URL,
+        api_key: STRAPI_API_KEY,
+      },
     }] : []),
     {
       resolve: "medusa-plugin-wishlist",

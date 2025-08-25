@@ -85,10 +85,24 @@ export const STRIPE_API_KEY = process.env.STRIPE_API_KEY;
 export const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
 /**
+ * (optional) Mollie API key and webhook secret
+ */
+
+export const MOLLIE_API_KEY = process.env.MOLLIE_API_KEY;
+export const MOLLIE_REDIRECT_URL = process.env.MOLLIE_REDIRECT_URL;
+export const MEDUSA_URL = process.env.MEDUSA_URL;
+
+/**
  * (optional) Meilisearch configuration
  */
 export const MEILISEARCH_HOST = process.env.MEILISEARCH_HOST;
 export const MEILISEARCH_ADMIN_KEY = process.env.MEILISEARCH_ADMIN_KEY;
+
+/**
+ * (optional) Strapi configuration
+ */
+export const STRAPI_URL = process.env.STRAPI_URL;
+export const STRAPI_API_KEY = process.env.STRAPI_API_KEY;
 
 /**
  * Worker mode
