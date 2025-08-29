@@ -80,7 +80,7 @@ const ProductBrandWidgetEdit = ({
         },
       });
 
-      toast.success("Product created successfully");
+      toast.success("Brand added successfully");
       queryClient.invalidateQueries({
         queryKey: [["product-brands", product.id]],
       });
