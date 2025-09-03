@@ -1,8 +1,7 @@
 import { Button, FocusModal, Heading, Input, Label, toast } from "@medusajs/ui";
-import { useState, useRef, useCallback, useMemo } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { sdk } from "../lib/sdk.js";
-import { HttpTypes } from "@medusajs/framework/types";
 
 const CreateBrand = () => {
   const [open, setOpen] = useState(false);

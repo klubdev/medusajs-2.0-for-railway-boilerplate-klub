@@ -11,7 +11,7 @@ import {
 import { useState, useRef, useCallback, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { sdk } from "../lib/sdk.js";
-import { HttpTypes } from "@medusajs/framework/types";
+import { HttpTypes } from "@medusajs/framework/types"
 
 const CreateBundledProduct = () => {
   const [open, setOpen] = useState(false);

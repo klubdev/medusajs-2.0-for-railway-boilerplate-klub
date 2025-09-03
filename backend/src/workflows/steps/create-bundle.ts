@@ -24,7 +24,7 @@ export const createBundleStep = createStep(
     }
     const bundledProductModuleService: BundledProductModuleService =
       container.resolve(BUNDLED_PRODUCT_MODULE)
-      
+
     await bundledProductModuleService.deleteBundles(bundleId)
   }
 )

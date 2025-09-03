@@ -32,7 +32,7 @@ export const createBundledProductWorkflow = createWorkflow(
     const bundleProduct = createProductsWorkflow.runAsStep({
       input: {
         products: [bundleData.product],
-      }
+      },
     })
 
     createRemoteLinkStep([{
@@ -46,7 +46,7 @@ export const createBundledProductWorkflow = createWorkflow(
 
     const bundleProducttemLinks = transform({
       bundleData,
-      bundleItems
+      bundleItems,
     }, (data) => {
       return data.bundleItems.map((item, index) => ({
         [BUNDLED_PRODUCT_MODULE]: {
@@ -62,6 +62,7 @@ export const createBundledProductWorkflow = createWorkflow(
       name: "create-bundle-product-items-links",
     })
 
+    // retrieve bundled product with items
     const { data } = useQueryGraphStep({
       entity: "bundle",
       fields: ["*", "items.*"],

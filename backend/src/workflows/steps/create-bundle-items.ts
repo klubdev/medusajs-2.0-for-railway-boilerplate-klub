@@ -12,27 +12,25 @@ type CreateBundleItemsStepInput = {
 export const createBundleItemsStep = createStep(
   "create-bundle-items",
   async ({ bundle_id, items }: CreateBundleItemsStepInput, { container }) => {
-    const bundledProductModuleService: BundledProductModuleService = container.resolve(
-      BUNDLED_PRODUCT_MODULE
-    )
+    const bundledProductModuleService: BundledProductModuleService =
+      container.resolve(BUNDLED_PRODUCT_MODULE)
 
     const bundleItems = await bundledProductModuleService.createBundleItems(
-      items.map(item => ({
+      items.map((item) => ({
         bundle_id,
         quantity: item.quantity,
       }))
     )
 
-    return new StepResponse(bundleItems, bundleItems.map(item => item.id))
+    return new StepResponse(bundleItems, bundleItems.map((item) => item.id))
   },
   async (itemIds, { container }) => {
     if (!itemIds?.length) {
       return
     }
 
-    const bundledProductModuleService: BundledProductModuleService = container.resolve(
-      BUNDLED_PRODUCT_MODULE
-    )
+    const bundledProductModuleService: BundledProductModuleService =
+      container.resolve(BUNDLED_PRODUCT_MODULE)
 
     await bundledProductModuleService.deleteBundleItems(itemIds)
   }

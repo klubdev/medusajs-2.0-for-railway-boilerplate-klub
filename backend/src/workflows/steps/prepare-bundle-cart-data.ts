@@ -25,12 +25,11 @@ export const prepareBundleCartDataStep = createStep(
     const bundleItems = bundle.items.map((item: BundleItemWithProduct) => {
       const selectedItem = items.find((i) => i.item_id === item.id)
       if (!selectedItem) {
-        throw new MedusaError(
-          MedusaError.Types.INVALID_DATA, 
-          `No variant selected for bundle item ${item.id}`
-        )
+        throw new MedusaError(MedusaError.Types.INVALID_DATA, `No variant selected for bundle item ${item.id}`)
       }
-      const variant = item.product.variants.find((v) => v.id === selectedItem.variant_id)
+      const variant = item.product.variants.find((v) => 
+        v.id === selectedItem.variant_id
+      )
       if (!variant) {
         throw new MedusaError(
           MedusaError.Types.INVALID_DATA, 
@@ -42,8 +41,8 @@ export const prepareBundleCartDataStep = createStep(
         quantity: item.quantity * quantity,
         metadata: {
           bundle_id: bundle.id,
-          quantity: quantity
-        }
+          quantity: quantity,
+        },
       }
     })
 

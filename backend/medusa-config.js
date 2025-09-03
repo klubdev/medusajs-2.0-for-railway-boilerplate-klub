@@ -203,7 +203,11 @@ const medusaConfig = {
     {
       resolve: "@alpha-solutions/medusa-image-alt",
       options: {},
-    }
+    },
+    {
+      resolve: "@medusajs/draft-order",
+      options: {},
+    },
   ]
 };
 
