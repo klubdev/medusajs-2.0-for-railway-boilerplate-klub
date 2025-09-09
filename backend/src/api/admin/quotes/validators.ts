@@ -9,7 +9,7 @@ export const AdminGetQuoteParams = createFindParams({
   offset: 0,
 })
   .strict();
-  
+
 export type GetQuoteParamsType = z.infer<typeof GetQuoteParams>;
 export const GetQuoteParams = createFindParams({
   limit: 15,
@@ -19,6 +19,6 @@ export const GetQuoteParams = createFindParams({
 export type CreateQuoteType = z.infer<typeof CreateQuote>;
 export const CreateQuote = z
   .object({
-    cart_id: z.string().min(1),
+    cart_id: z.string(),
   })
   .strict();

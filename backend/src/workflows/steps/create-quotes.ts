@@ -27,7 +27,7 @@ export const createQuotesStep = createStep(
     if (!quoteIds) {
       return
     }
-    
+
     const quoteModuleService: QueryModuleService = container.resolve(
       QUOTE_MODULE
     );

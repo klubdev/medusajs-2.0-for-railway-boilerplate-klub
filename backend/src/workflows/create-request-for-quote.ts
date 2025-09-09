@@ -9,18 +9,23 @@ import {
   createWorkflow,
   transform,
   WorkflowResponse,
-} from "@medusajs/workflows-sdk";
+} from "@medusajs/framework/workflows-sdk";
 import { CreateOrderLineItemDTO } from "@medusajs/framework/types";
 import { createQuotesStep } from "./steps/create-quotes";
 
 type WorkflowInput = {
-  cart_id: string;
+  cart_id?: string;
   customer_id: string;
 };
 
 export const createRequestForQuoteWorkflow = createWorkflow(
   "create-request-for-quote",
   (input: WorkflowInput) => {
+
+    if (!input.cart_id) {
+      throw new Error("cart_id is required to create a quote");
+    }
+    
     const { data: carts } = useQueryGraphStep({
       entity: "cart",
       fields: [

@@ -3,10 +3,10 @@ import {
   MedusaResponse,
 } from "@medusajs/framework/http";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
-import { 
+import {
   createRequestForQuoteWorkflow
 } from "../../../../../workflows/create-request-for-quote";
-import { CreateQuoteType } from "../../../validators";
+import { CreateQuoteType } from "../../../../admin/quotes/validators";
 
 export const POST = async (
   req: AuthenticatedMedusaRequest<CreateQuoteType>,
@@ -31,9 +31,13 @@ export const POST = async (
     {
       entity: "quote",
       fields: req.queryConfig.fields,
-      filters: { id: createdQuote.id },
+      filters: {
+        id: createdQuote.id
+      },
     },
-    { throwIfKeyNotFound: true }
+    { 
+      throwIfKeyNotFound: true 
+    }
   );
 
   return res.json({ quote });
