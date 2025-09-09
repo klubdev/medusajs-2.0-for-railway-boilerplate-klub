@@ -3,6 +3,13 @@ import { PostBundledProductsSchema } from "./admin/bundled-products/route";
 import { createFindParams } from "@medusajs/medusa/api/utils/validators";
 import { PostCartsBundledLineItemsSchema } from "./store/carts/[id]/line-item-bundles/route";
 import { PostAdminCreateBrand } from "./admin/brands/validators"
+
+import { CreateQuote, GetQuoteParams } from "./admin/quotes/validators";
+import { listAdminQuoteQueryConfig } from "./admin/quotes/query-config";
+import { AdminGetQuoteParams } from "./admin/quotes/validators";
+import { listStoreQuoteQueryConfig } from "./store/customers/me/quotes/query-config";
+
+
 import { z } from "zod";
 
 export default defineMiddlewares({
@@ -68,6 +75,28 @@ export default defineMiddlewares({
       additionalDataValidator: {
         brand_id: z.string().optional(),
       },
-    }
+    },
+    {
+      method: ["POST"],
+      matcher: "/store/customers/me/quotes",
+      middlewares: [
+        validateAndTransformBody(CreateQuote),
+      ],
+    },
+    {
+      matcher: "/store/customers/me/quotes*",
+      middlewares: [
+        validateAndTransformQuery(GetQuoteParams, listStoreQuoteQueryConfig),
+      ],
+    },
+    {
+      matcher: "/admin/quotes*",
+      middlewares: [
+        validateAndTransformQuery(
+          AdminGetQuoteParams,
+          listAdminQuoteQueryConfig
+        ),
+      ],
+    },
   ]
 })

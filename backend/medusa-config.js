@@ -160,7 +160,10 @@ const medusaConfig = {
     },
     {
       resolve: "./src/modules/brand",
-    }
+    },
+    {
+      resolve: "./src/modules/quote",
+    },
   ],
   plugins: [
     ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
