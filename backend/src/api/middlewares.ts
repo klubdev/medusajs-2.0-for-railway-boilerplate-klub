@@ -9,8 +9,10 @@ import { listAdminQuoteQueryConfig } from "./admin/quotes/query-config";
 import { AdminGetQuoteParams } from "./admin/quotes/validators";
 import { listStoreQuoteQueryConfig } from "./store/customers/me/quotes/query-config";
 
-
 import { z } from "zod";
+
+export const GetBrandsSchema = createFindParams()
+export const GetBundleProductsSchema = createFindParams()
 
 export default defineMiddlewares({
   routes: [
@@ -25,7 +27,7 @@ export default defineMiddlewares({
       matcher: "/admin/bundled-products",
       methods: ["GET"],
       middlewares: [
-        validateAndTransformQuery(createFindParams(), {
+        validateAndTransformQuery(GetBundleProductsSchema, {
           defaults: [
             "id",
             "title",
@@ -57,7 +59,7 @@ export default defineMiddlewares({
       method: "GET",
       middlewares: [
         validateAndTransformQuery(
-          createFindParams(),
+          GetBrandsSchema,
           {
             defaults: [
               "id",
@@ -68,6 +70,7 @@ export default defineMiddlewares({
           }
         ),
       ],
+
     },
     {
       matcher: "/admin/products",
