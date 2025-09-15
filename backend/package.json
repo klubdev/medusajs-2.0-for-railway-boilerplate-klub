@@ -18,7 +18,7 @@
     "ib": "init-backend",
     "start": "init-backend && cd .medusa/server && medusa start --verbose",
     "dev": "medusa develop",
-    "postdeploy": "medusa db:migrate",
+    "predeploy": "medusa db:migrate",
     "email:dev": "email dev --dir=./src/modules/email-notifications/templates --port=3002"
   },
   "dependencies": {
