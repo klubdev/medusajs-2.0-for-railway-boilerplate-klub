@@ -8,6 +8,7 @@ import { CreateQuote, GetQuoteParams } from "./admin/quotes/validators";
 import { listAdminQuoteQueryConfig } from "./admin/quotes/query-config";
 import { AdminGetQuoteParams } from "./admin/quotes/validators";
 import { listStoreQuoteQueryConfig } from "./store/customers/me/quotes/query-config";
+import { PostInvoiceConfgSchema } from "./admin/invoice-config/route"
 
 import { z } from "zod";
 
@@ -101,5 +102,12 @@ export default defineMiddlewares({
         ),
       ],
     },
+    {
+      matcher: "/admin/invoice-config",
+      methods: ["POST"],
+      middlewares: [
+        validateAndTransformBody(PostInvoiceConfgSchema)
+      ]
+    }
   ]
 })

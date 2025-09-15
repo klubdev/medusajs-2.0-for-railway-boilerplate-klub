@@ -164,6 +164,9 @@ const medusaConfig = {
     {
       resolve: "./src/modules/quote",
     },
+    {
+      resolve: "./src/modules/invoice-generator",
+    },
   ],
   plugins: [
     ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
