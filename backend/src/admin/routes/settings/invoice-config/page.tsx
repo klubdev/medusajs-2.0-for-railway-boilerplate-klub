@@ -214,7 +214,7 @@ const InvoiceConfigPage = () => {
 };
 
 export const config = defineRouteConfig({
-  label: "Default Invoice Config",
+  label: "Invoice Config",
 });
 
 export default InvoiceConfigPage;
