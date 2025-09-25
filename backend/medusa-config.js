@@ -26,7 +26,8 @@ import {
   MEILISEARCH_HOST,
   MEILISEARCH_ADMIN_KEY,
   STRAPI_URL,
-  STRAPI_API_KEY
+  STRAPI_API_KEY,
+  SHOULD_EXPORT_CUSTOM_ATTRIBUTES
 } from 'lib/constants';
 
 loadEnv(process.env.NODE_ENV, process.cwd());
@@ -214,6 +215,10 @@ const medusaConfig = {
       resolve: "@medusajs/draft-order",
       options: {},
     },
+    ...(SHOULD_EXPORT_CUSTOM_ATTRIBUTES ? [{
+      resolve: "@linearcommerce/product-custom-attributes",
+      options: {}
+    }] : []),
   ]
 };
 

@@ -14,6 +14,9 @@ importers:
       '@devx-commerce/strapi':
         specifier: ^0.0.11
         version: 0.0.11(pielr64smxvm2lqz45vni5trau)
+      '@linearcommerce/product-custom-attributes':
+        specifier: ^0.0.5
+        version: 0.0.5(jdsyoxzh5hg7xze6jmqcvsughu)
       '@medusajs/admin-sdk':
         specifier: 2.10.3
         version: 2.10.3
@@ -1350,6 +1353,25 @@ packages:
 
   '@lezer/lr@1.4.2':
     resolution: {integrity: sha512-pu0K1jCIdnQ12aWNaAVU5bzi7Bd1w54J3ECgANPmYLtQKP0HBj2cE/5coBD66MT10xbtIuUr7tg0Shbsvk0mDA==}
+
+  '@linearcommerce/product-custom-attributes@0.0.5':
+    resolution: {integrity: sha512-D5om1dQbsYwHs8W2gPqYxCIn04zNF7eSWtS4aNDLECluI6Y0WcXLkG4ahDfudewL+zpL6v6RrZ6cia5jC/4i5A==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@medusajs/admin-sdk': ^2.8.2
+      '@medusajs/cli': ^2.8.2
+      '@medusajs/framework': ^2.8.2
+      '@medusajs/icons': ^2.8.2
+      '@medusajs/medusa': ^2.8.2
+      '@medusajs/test-utils': ^2.8.2
+      '@medusajs/ui': ^4.0.4
+      '@mikro-orm/cli': 6.4.3
+      '@mikro-orm/core': 6.4.3
+      '@mikro-orm/knex': 6.4.3
+      '@mikro-orm/migrations': 6.4.3
+      '@mikro-orm/postgresql': 6.4.3
+      awilix: ^8.0.1
+      pg: ^8.13.0
 
   '@marijn/find-cluster-break@1.0.2':
     resolution: {integrity: sha512-l0h88YhZFyKdXIFNfSWpyjStDjGHwZ/U7iobcK1cQQD8sejsONdQtTVU+1wVN1PBw40PiiHB1vA5S7VTfQiP9g==}
@@ -9395,6 +9417,23 @@ snapshots:
   '@lezer/lr@1.4.2':
     dependencies:
       '@lezer/common': 1.2.3
+
+  '@linearcommerce/product-custom-attributes@0.0.5(jdsyoxzh5hg7xze6jmqcvsughu)':
+    dependencies:
+      '@medusajs/admin-sdk': 2.10.3
+      '@medusajs/cli': 2.10.3(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.16.3))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.17)(pg@8.16.3))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(@types/node@20.19.17)(awilix@8.0.1)(ioredis@5.8.0)(pg@8.16.3)(vite@5.4.20(@types/node@20.19.17))
+      '@medusajs/framework': 2.10.3(@medusajs/cli@2.10.3(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.16.3))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.17)(pg@8.16.3))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(@types/node@20.19.17)(awilix@8.0.1)(ioredis@5.8.0)(pg@8.16.3)(vite@5.4.20(@types/node@20.19.17)))(@mikro-orm/cli@6.4.3(pg@8.16.3))(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.16.3))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.17)(pg@8.16.3))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(awilix@8.0.1)(ioredis@5.8.0)(pg@8.16.3)(vite@5.4.20(@types/node@20.19.17))
+      '@medusajs/icons': 2.10.3(react@18.3.1)
+      '@medusajs/medusa': 2.10.3(wm2m45klegtnlz4rhlzgjfpuga)
+      '@medusajs/test-utils': 2.10.3(@medusajs/framework@2.10.3(@medusajs/cli@2.10.3(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.16.3))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.17)(pg@8.16.3))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(@types/node@20.19.17)(awilix@8.0.1)(ioredis@5.8.0)(pg@8.16.3)(vite@5.4.20(@types/node@20.19.17)))(@mikro-orm/cli@6.4.3(pg@8.16.3))(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.16.3))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.17)(pg@8.16.3))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(awilix@8.0.1)(ioredis@5.8.0)(pg@8.16.3)(vite@5.4.20(@types/node@20.19.17)))(@medusajs/medusa@2.10.3)(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(awilix@8.0.1)
+      '@medusajs/ui': 4.0.23(@types/react-dom@18.3.7(@types/react@18.3.24))(@types/react@18.3.24)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.2)
+      '@mikro-orm/cli': 6.4.3(pg@8.16.3)
+      '@mikro-orm/core': 6.4.3
+      '@mikro-orm/knex': 6.4.3(@mikro-orm/core@6.4.3)(pg@8.16.3)
+      '@mikro-orm/migrations': 6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.17)(pg@8.16.3)
+      '@mikro-orm/postgresql': 6.4.3(@mikro-orm/core@6.4.3)
+      awilix: 8.0.1
+      pg: 8.16.3
 
   '@marijn/find-cluster-break@1.0.2': {}
 
