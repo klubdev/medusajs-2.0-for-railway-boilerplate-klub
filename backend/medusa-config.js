@@ -169,6 +169,9 @@ const medusaConfig = {
     {
       resolve: "./src/modules/invoice-generator",
     },
+    {
+      resolve: "./src/modules/wishlist",
+    },
   ],
   plugins: [
     ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
@@ -201,19 +204,11 @@ const medusaConfig = {
       }
     }] : []),
     {
-      resolve: "medusa-plugin-wishlist",
-      options: {}
-    },
-    {
       resolve: "medusa-variant-images",
       options: {}
     },
     {
       resolve: "@alpha-solutions/medusa-image-alt",
-      options: {},
-    },
-    {
-      resolve: "@medusajs/draft-order",
       options: {},
     },
     ...(SHOULD_EXPORT_CUSTOM_ATTRIBUTES ? [{

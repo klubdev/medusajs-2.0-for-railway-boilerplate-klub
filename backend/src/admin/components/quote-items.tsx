@@ -5,7 +5,7 @@ import {
 } from "@medusajs/framework/types";
 import { Badge, Text } from "@medusajs/ui";
 import { useMemo } from "react";
-import { Amount } from "./amount.js";
+import { Amount } from "./amount";
 
 export const QuoteItem = ({
   item,

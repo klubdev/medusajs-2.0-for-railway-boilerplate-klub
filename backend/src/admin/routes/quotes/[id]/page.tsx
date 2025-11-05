@@ -10,21 +10,22 @@ import {
 } from "@medusajs/ui";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useOrderPreview } from "../../../hooks/order-preview.js";
-import {
-  useQuote,
-  useRejectQuote,
-  useSendQuote,
-} from "../../../hooks/quotes.js";
-import { QuoteItems } from "../../../components/quote-items.js";
-import { TotalsBreakdown } from "../../../components/totals-breakdown.js";
-import { formatAmount } from "../../../../utils/format-amount.js";
+import { useOrderPreview } from "../../../hooks/order-preview";
+import { 
+  useQuote, 
+  useRejectQuote, 
+  useSendQuote
+} from "../../../hooks/quotes";
+import { QuoteItems } from "../../../components/quote-items";
+import { TotalsBreakdown } from "../../../components/totals-breakdown";
+import { formatAmount } from "../../../utils/format-amount";
 
 const QuoteDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { quote, isLoading } = useQuote(id!, {
-    fields: "*draft_order.customer",
+    fields:
+      "*draft_order.customer",
   });
 
   const { order: preview, isLoading: isPreviewLoading } = useOrderPreview(
@@ -62,11 +63,11 @@ const QuoteDetails = () => {
       setShowRejectQuote(true);
     }
 
-    if (
-      !["pending_merchant", "customer_rejected", "merchant_rejected"].includes(
-        quote?.status!
-      )
-    ) {
+    if (![
+      "pending_merchant",
+      "customer_rejected",
+      "merchant_rejected",
+    ].includes(quote?.status!)) {
       setShowManageQuote(false);
     } else {
       setShowManageQuote(true);
@@ -103,10 +104,13 @@ const QuoteDetails = () => {
     });
 
     if (res) {
-      await sendQuote(void 0, {
-        onSuccess: () => toast.success("Successfully sent quote to customer"),
-        onError: (e) => toast.error(e.message),
-      });
+      await sendQuote(
+        void 0,
+        {
+          onSuccess: () => toast.success("Successfully sent quote to customer"),
+          onError: (e) => toast.error(e.message),
+        }
+      );
     }
   };
 
@@ -147,9 +151,7 @@ const QuoteDetails = () => {
           <Container className="divide-y divide-dashed p-0">
             <div className="flex items-center justify-between px-6 py-4">
               <Heading level="h2">Quote Summary</Heading>
-              <span className="text-ui-fg-muted txt-compact-small">
-                {quote.status}
-              </span>
+              <span className="text-ui-fg-muted txt-compact-small">{quote.status}</span>
             </div>
             <QuoteItems order={quote.draft_order} preview={preview!} />
             <TotalsBreakdown order={quote.draft_order} />
@@ -169,13 +171,10 @@ const QuoteDetails = () => {
                   size="small"
                   leading="compact"
                 >
-                  {formatAmount(
-                    quote.draft_order.total,
-                    quote.draft_order.currency_code
-                  )}
+                  {formatAmount(quote.draft_order.total, quote.draft_order.currency_code)}
                 </Text>
               </div>
-
+        
               <div className="text-ui-fg-base flex items-center justify-between">
                 <Text
                   className="text-ui-fg-subtle text-semibold"
@@ -191,10 +190,7 @@ const QuoteDetails = () => {
                   leading="compact"
                   weight="plus"
                 >
-                  {formatAmount(
-                    preview!.summary.current_order_total,
-                    quote.draft_order.currency_code
-                  )}
+                  {formatAmount(preview!.summary.current_order_total, quote.draft_order.currency_code)}
                 </Text>
               </div>
             </div>
@@ -233,6 +229,7 @@ const QuoteDetails = () => {
               )}
             </div>
           </Container>
+
         </div>
 
         <div className="mt-2 flex w-full max-w-[100%] flex-col gap-y-3 xl:mt-0 xl:max-w-[400px]">

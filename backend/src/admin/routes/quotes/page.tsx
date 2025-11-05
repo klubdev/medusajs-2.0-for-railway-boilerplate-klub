@@ -10,8 +10,8 @@ import {
   useDataTable,
 } from "@medusajs/ui";
 import { useNavigate } from "react-router-dom";
-import { useQuotes } from "../../hooks/quotes.js";
-import { AdminQuote } from "../../types.js";
+import { useQuotes } from "../../hooks/quotes";
+import { AdminQuote } from "../../types";
 import { useState } from "react";
 
 const StatusTitles: Record<string, string> = {
@@ -58,6 +58,7 @@ const Quotes = () => {
     pageSize: 15,
     pageIndex: 0,
   });
+
   const {
     quotes = [],
     count,

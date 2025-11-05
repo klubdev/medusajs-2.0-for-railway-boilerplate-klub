@@ -4,7 +4,7 @@ import {
   AdminQuoteResponse,
   QuoteQueryParams,
   AdminQuotesResponse,
-} from "../types.js";
+} from "../types";
 import {
   QueryKey,
   useMutation,

@@ -1,5 +1,5 @@
 import { clx } from "@medusajs/ui";
-import { formatAmount } from "../../utils/format-amount.js";
+import { formatAmount } from "../utils/format-amount";
 
 type AmountProps = {
   currencyCode: string;
@@ -21,7 +21,7 @@ export const Amount = ({
       <div className="flex h-full w-full items-center">
         <span className="text-ui-fg-muted">-</span>
       </div>
-    );
+    )
   }
 
   const formatted = formatAmount(amount, currencyCode);

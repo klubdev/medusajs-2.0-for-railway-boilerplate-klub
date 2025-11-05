@@ -2,9 +2,9 @@ import {
   confirmOrderEditRequestWorkflow,
   updateOrderWorkflow,
   useQueryGraphStep,
-} from "@medusajs/medusa/core-flows";
+} from "@medusajs/core-flows";
 import { OrderStatus } from "@medusajs/framework/utils";
-import { createWorkflow } from "@medusajs/framework/workflows-sdk";
+import { createWorkflow } from "@medusajs/workflows-sdk";
 import { validateQuoteCanAcceptStep } from "./steps/validate-quote-can-accept";
 import { QuoteStatus } from "../modules/quote/models/quote";
 import { updateQuotesStep } from "./steps/update-quotes";

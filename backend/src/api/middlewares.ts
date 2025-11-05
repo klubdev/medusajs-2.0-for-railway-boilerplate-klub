@@ -4,11 +4,13 @@ import { createFindParams } from "@medusajs/medusa/api/utils/validators";
 import { PostCartsBundledLineItemsSchema } from "./store/carts/[id]/line-item-bundles/route";
 import { PostAdminCreateBrand } from "./admin/brands/validators"
 
-import { CreateQuote, GetQuoteParams } from "./admin/quotes/validators";
+import { CreateQuote, GetQuoteParams } from "../api/store/validators";
 import { listAdminQuoteQueryConfig } from "./admin/quotes/query-config";
 import { AdminGetQuoteParams } from "./admin/quotes/validators";
 import { listStoreQuoteQueryConfig } from "./store/customers/me/quotes/query-config";
 import { PostInvoiceConfgSchema } from "./admin/invoice-config/route"
+import { PostStoreCreateWishlistItem } from "./store/customers/me/wishlists/items/validators"
+
 
 import { z } from "zod";
 
@@ -108,6 +110,13 @@ export default defineMiddlewares({
       middlewares: [
         validateAndTransformBody(PostInvoiceConfgSchema)
       ]
-    }
+    },
+    {
+      matcher: "/store/customers/me/wishlists/items",
+      method: "POST",
+      middlewares: [
+        validateAndTransformBody(PostStoreCreateWishlistItem),
+      ],
+    },
   ]
 })
