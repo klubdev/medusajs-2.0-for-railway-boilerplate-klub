@@ -132,6 +132,9 @@ importers:
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.19.24)(ts-node@10.9.2(@swc/core@1.5.7(@swc/helpers@0.5.17))(@types/node@20.19.24)(typescript@5.9.3))
+      medusajs-launch-utils:
+        specifier: ^0.0.18
+        version: 0.0.18
       prop-types:
         specifier: ^15.8.1
         version: 15.8.1
@@ -4627,6 +4630,10 @@ packages:
     resolution: {integrity: sha512-zIHwmZPRshsCdpMDyVsqGmgyP0yT8GAgXUnkdAoJisxvf33k7yO6OuoKmcTGuXPWSsm8Oh88nZicRLA9Y0rUeA==}
     engines: {node: '>=12'}
 
+  dotenv@10.0.0:
+    resolution: {integrity: sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==}
+    engines: {node: '>=10'}
+
   dotenv@16.4.7:
     resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
     engines: {node: '>=12'}
@@ -5689,6 +5696,10 @@ packages:
       '@mikro-orm/postgresql': ^6.4.3
       awilix: ^8.0.1
       pg: ^8.13.0
+
+  medusajs-launch-utils@0.0.18:
+    resolution: {integrity: sha512-ReJT1qpYMnoIvkFls5Mzn1bzacLtxZQpsit+bTwt5LzrnqDODzWDzRiUYaV66n359La1VfK3prMghoM3k/kFxA==}
+    hasBin: true
 
   meilisearch@0.53.0:
     resolution: {integrity: sha512-nG4VXbEOSzUmtbfsgOo+t6yX1ECEgXaT4hC0ap9MBpQGK5xwT+NWYDENYsKWR75cVaWaAqva+ok4zHlgtdXlLw==}
@@ -13203,6 +13214,8 @@ snapshots:
     dependencies:
       dotenv: 16.6.1
 
+  dotenv@10.0.0: {}
+
   dotenv@16.4.7: {}
 
   dotenv@16.6.1: {}
@@ -14475,6 +14488,15 @@ snapshots:
       awilix: 8.0.1
       lodash-es: 4.17.21
       pg: 8.13.1
+
+  medusajs-launch-utils@0.0.18:
+    dependencies:
+      axios: 1.13.2
+      dotenv: 10.0.0
+      pg: 8.16.3
+    transitivePeerDependencies:
+      - debug
+      - pg-native
 
   meilisearch@0.53.0: {}
 
