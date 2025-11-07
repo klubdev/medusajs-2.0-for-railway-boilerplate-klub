@@ -14,6 +14,9 @@ importers:
       '@devx-commerce/strapi':
         specifier: ^0.0.12
         version: 0.0.12(2g62tpahvs4wkdoxrzf7ngpusq)
+      '@eancarr/klaviyo-medusa':
+        specifier: ^0.2.5
+        version: 0.2.5(nifr6eyofvhsliba4ob6kezfee)
       '@linearcommerce/product-custom-attributes':
         specifier: ^0.0.6
         version: 0.0.6(sroox4wfxxvvywjl6rebahj76a)
@@ -630,6 +633,25 @@ packages:
     resolution: {integrity: sha512-+MKAJEOfaBe5SmV6t34p80MMKhjvUz0vRrvVJbPT0WElzaOJ/1xs+D+KDv+tD/NE5ujfrChEcshd4fLn0wpiqg==}
     peerDependencies:
       react: '>=16.8.0'
+
+  '@eancarr/klaviyo-medusa@0.2.5':
+    resolution: {integrity: sha512-kJv73oIut8/06n/TrKCkDUchkp/fYVSDGFbvV7eWtW5tvIGEcTEzRr+ujxbmm21LYvrIG2fUeZCmTq+4ib5yTg==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@medusajs/admin-sdk': 2.10.3
+      '@medusajs/cli': 2.10.3
+      '@medusajs/framework': 2.10.3
+      '@medusajs/icons': 2.10.3
+      '@medusajs/medusa': 2.10.3
+      '@medusajs/test-utils': 2.10.3
+      '@medusajs/ui': ^4.0.3
+      '@mikro-orm/cli': 6.4.3
+      '@mikro-orm/core': 6.4.3
+      '@mikro-orm/knex': 6.4.3
+      '@mikro-orm/migrations': 6.4.3
+      '@mikro-orm/postgresql': 6.4.3
+      awilix: ^8.0.1
+      pg: ^8.13.0
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -5512,6 +5534,9 @@ packages:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
 
+  klaviyo-api@17.0.0:
+    resolution: {integrity: sha512-vYuHQsvqSM27IZjRiu6Fvxfh4U6k0w7ypk40lj1E36a7fw/reQg30sjoIIJQabrVM87+R/MI3mqjcz6dd83JPQ==}
+
   kleur@3.0.3:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
@@ -8087,6 +8112,26 @@ snapshots:
     dependencies:
       react: 18.2.0
       tslib: 2.8.1
+
+  '@eancarr/klaviyo-medusa@0.2.5(nifr6eyofvhsliba4ob6kezfee)':
+    dependencies:
+      '@medusajs/admin-sdk': 2.10.3
+      '@medusajs/cli': 2.10.3(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(@types/node@20.19.24)(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24))
+      '@medusajs/framework': 2.10.3(@medusajs/cli@2.10.3(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(@types/node@20.19.24)(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24)))(@mikro-orm/cli@6.4.3(pg@8.13.1))(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24))
+      '@medusajs/icons': 2.10.3(react@18.2.0)
+      '@medusajs/medusa': 2.10.3(5wuvpsufoawum4ceoryq5dbgtq)
+      '@medusajs/test-utils': 2.10.3(@medusajs/framework@2.10.3(@medusajs/cli@2.10.3(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(@types/node@20.19.24)(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24)))(@mikro-orm/cli@6.4.3(pg@8.13.1))(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24)))(@medusajs/medusa@2.10.3)(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(awilix@8.0.1)
+      '@medusajs/ui': 4.0.23(@types/react-dom@18.3.7(@types/react@18.3.26))(@types/react@18.3.26)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.9.3)
+      '@mikro-orm/cli': 6.4.3(pg@8.13.1)
+      '@mikro-orm/core': 6.4.3
+      '@mikro-orm/knex': 6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1)
+      '@mikro-orm/migrations': 6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1)
+      '@mikro-orm/postgresql': 6.4.3(@mikro-orm/core@6.4.3)
+      awilix: 8.0.1
+      klaviyo-api: 17.0.0
+      pg: 8.13.1
+    transitivePeerDependencies:
+      - debug
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
@@ -14335,6 +14380,13 @@ snapshots:
       safe-buffer: 5.2.1
 
   kind-of@6.0.3: {}
+
+  klaviyo-api@17.0.0:
+    dependencies:
+      axios: 1.13.2
+      form-data: 4.0.4
+    transitivePeerDependencies:
+      - debug
 
   kleur@3.0.3: {}
 

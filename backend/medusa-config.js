@@ -27,7 +27,8 @@ import {
   MEILISEARCH_ADMIN_KEY,
   STRAPI_URL,
   STRAPI_API_KEY,
-  SHOULD_EXPORT_CUSTOM_ATTRIBUTES
+  SHOULD_EXPORT_CUSTOM_ATTRIBUTES,
+  KLAVIYO_API_KEY
 } from 'lib/constants';
 
 loadEnv(process.env.NODE_ENV, process.cwd());
@@ -201,6 +202,12 @@ const medusaConfig = {
       options: {
         base_url: STRAPI_URL,
         api_key: STRAPI_API_KEY
+      }
+    }] : []),
+    ...(KLAVIYO_API_KEY ? [{
+      resolve: "@eancarr/klaviyo-medusa",
+      options: {
+        apiKey: process.env.KLAVIYO_API_KEY,
       }
     }] : []),
     {
