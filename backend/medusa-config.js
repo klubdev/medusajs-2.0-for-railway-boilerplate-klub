@@ -160,25 +160,6 @@ const medusaConfig = {
         ],
       },
     }] : []),
-    ...(POSTMARK_API_KEY ? [{
-      resolve: "@medusajs/notification",
-      options: {
-        providers: [
-          {
-            resolve: "medusa-plugin-postmark/providers/postmark",
-            id: "postmark",
-            options: {
-              channels: ["email"],
-              apiKey: POSTMARK_API_KEY,
-              default: {
-                from: POSTMARK_FROM,
-                bcc: POSTMARK_BCC,
-              }
-            },
-          },
-        ],
-      },
-    }] : []),
     {
       resolve: "./src/modules/bundled-product",
     },
@@ -224,12 +205,6 @@ const medusaConfig = {
         base_url: STRAPI_URL,
         api_key: STRAPI_API_KEY
       }
-    }] : []),
-    ...(POSTMARK_API_KEY ? [{
-      resolve: "medusa-plugin-postmark",
-      options: {
-        apiKey: POSTMARK_API_KEY,
-      },
     }] : []),
     {
       resolve: "medusa-variant-images",
