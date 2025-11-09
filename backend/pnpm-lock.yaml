@@ -89,9 +89,6 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
-      medusa-plugin-postmark:
-        specifier: ^6.0.0
-        version: 6.0.0(hepuzlv6xz6kgmvcufn5qntgk4)
       medusa-variant-images:
         specifier: ^1.1.4
         version: 1.1.4(wfvi4irwsyo64hcpzw7a3la5vy)
@@ -810,9 +807,6 @@ packages:
 
   '@formatjs/icu-skeleton-parser@1.8.16':
     resolution: {integrity: sha512-H13E9Xl+PxBd8D5/6TVUluSpxGNvFSlN/b3coUp0e0JpuWXXnQDiavIpY3NnvSp4xhEMoXyyBvVfdFX8jglOHQ==}
-
-  '@formatjs/intl-durationformat@0.7.6':
-    resolution: {integrity: sha512-jatAN3E84X6aP2UOGK1jTrwD1a7BiG3qWUSEDAhtyNd1BgYeS5wQPtXlnuGF1QRx0DjnwwNOIssyd7oQoRlQeg==}
 
   '@formatjs/intl-localematcher@0.6.2':
     resolution: {integrity: sha512-XOMO2Hupl0wdd172Y06h6kLpBz6Dv+J4okPLl4LPtzbr8f66WbIoy4ev98EBuZ6ZK4h5ydTN6XneT4QVpD7cdA==}
@@ -5683,19 +5677,6 @@ packages:
     resolution: {integrity: sha512-dq+qelQ9akHpcOl/gUVRTxVIOkAJ1wR3QAvb4RsVjS8oVoFjDGTc679wJYmUmknUF5HwMLOgb5O+a3KxfWapPQ==}
     engines: {node: '>= 0.6'}
 
-  medusa-plugin-postmark@6.0.0:
-    resolution: {integrity: sha512-+oW4SWKv41EERELt5aw18NHeoegJOy4usIuzW3c3FLyNUjUGCUtRuui2WZuf7G/EZsjSyb4NNkMJtl+wM6pD5A==}
-    engines: {node: '>=20'}
-    peerDependencies:
-      '@medusajs/admin-sdk': ^2.11.1
-      '@medusajs/cli': ^2.11.1
-      '@medusajs/framework': ^2.11.1
-      '@medusajs/icons': ^2.11.1
-      '@medusajs/medusa': ^2.11.1
-      '@medusajs/test-utils': ^2.11.1
-      '@medusajs/ui': ^4.0.25
-      react-i18next: '*'
-
   medusa-variant-images@1.1.4:
     resolution: {integrity: sha512-ZFheIG9QhpCbEtotayHu+FkleLZmnndsQqerWuPp4RdDbfMwtinj1I60Kngo4ChCRMYm31rrdg0gLweKcxePGw==}
     engines: {node: '>=20'}
@@ -6234,9 +6215,6 @@ packages:
   posthog-node@4.18.0:
     resolution: {integrity: sha512-XROs1h+DNatgKh/AlIlCtDxWzwrKdYDb2mOs58n4yN8BkGN9ewqeQwG5ApS4/IzwCb7HPttUkOVulkYatd2PIw==}
     engines: {node: '>=15.0.0'}
-
-  postmark@4.0.5:
-    resolution: {integrity: sha512-nerZdd3TwOH4CgGboZnlUM/q7oZk0EqpZgJL+Y3Nup8kHeaukxouQ6JcFF3EJEijc4QbuNv1TefGhboAKtf/SQ==}
 
   prettier@3.6.2:
     resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
@@ -6867,12 +6845,6 @@ packages:
   tarn@3.0.2:
     resolution: {integrity: sha512-51LAVKUSZSVfI05vjPESNc5vwqqZpbXCsU+/+wxlOrUjk2SnFTt97v9ZgQrD4YmxYW1Px6w2KjaDitCfkvgxMQ==}
     engines: {node: '>=8.0.0'}
-
-  temporal-polyfill@0.3.0:
-    resolution: {integrity: sha512-qNsTkX9K8hi+FHDfHmf22e/OGuXmfBm9RqNismxBrnSmZVJKegQ+HYYXT+R7Ha8F/YSm2Y34vmzD4cxMu2u95g==}
-
-  temporal-spec@0.3.0:
-    resolution: {integrity: sha512-n+noVpIqz4hYgFSMOSiINNOUOMFtV5cZQNCmmszA6GiVFVRt3G7AqVyhXjhCSmowvQn+NsGn+jMDMKJYHd3bSQ==}
 
   test-exclude@6.0.0:
     resolution: {integrity: sha512-cAGWPIyOHU6zlmg88jwm7VRyXnMN7iV68OGAbYDk/Mh/xC/pzVPlQtY6ngoIH/5/tciuhGfvESU8GrHrcxD56w==}
@@ -8248,12 +8220,6 @@ snapshots:
   '@formatjs/icu-skeleton-parser@1.8.16':
     dependencies:
       '@formatjs/ecma402-abstract': 2.3.6
-      tslib: 2.8.1
-
-  '@formatjs/intl-durationformat@0.7.6':
-    dependencies:
-      '@formatjs/ecma402-abstract': 2.3.6
-      '@formatjs/intl-localematcher': 0.6.2
       tslib: 2.8.1
 
   '@formatjs/intl-localematcher@0.6.2':
@@ -14504,22 +14470,6 @@ snapshots:
 
   media-typer@0.3.0: {}
 
-  medusa-plugin-postmark@6.0.0(hepuzlv6xz6kgmvcufn5qntgk4):
-    dependencies:
-      '@formatjs/intl-durationformat': 0.7.6
-      '@medusajs/admin-sdk': 2.10.3
-      '@medusajs/cli': 2.10.3(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(@types/node@20.19.24)(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24))
-      '@medusajs/framework': 2.10.3(@medusajs/cli@2.10.3(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(@types/node@20.19.24)(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24)))(@mikro-orm/cli@6.4.3(pg@8.13.1))(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24))
-      '@medusajs/icons': 2.10.3(react@18.2.0)
-      '@medusajs/medusa': 2.10.3(5wuvpsufoawum4ceoryq5dbgtq)
-      '@medusajs/test-utils': 2.10.3(@medusajs/framework@2.10.3(@medusajs/cli@2.10.3(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(@types/node@20.19.24)(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24)))(@mikro-orm/cli@6.4.3(pg@8.13.1))(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24)))(@medusajs/medusa@2.10.3)(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(awilix@8.0.1)
-      '@medusajs/ui': 4.0.23(@types/react-dom@18.3.7(@types/react@18.3.26))(@types/react@18.3.26)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.9.3)
-      postmark: 4.0.5
-      react-i18next: 13.5.0(i18next@23.7.11)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      temporal-polyfill: 0.3.0
-    transitivePeerDependencies:
-      - debug
-
   medusa-variant-images@1.1.4(wfvi4irwsyo64hcpzw7a3la5vy):
     dependencies:
       '@medusajs/admin-sdk': 2.10.3
@@ -15021,12 +14971,6 @@ snapshots:
   postgres-interval@4.0.2: {}
 
   posthog-node@4.18.0:
-    dependencies:
-      axios: 1.13.2
-    transitivePeerDependencies:
-      - debug
-
-  postmark@4.0.5:
     dependencies:
       axios: 1.13.2
     transitivePeerDependencies:
@@ -15811,12 +15755,6 @@ snapshots:
       - yaml
 
   tarn@3.0.2: {}
-
-  temporal-polyfill@0.3.0:
-    dependencies:
-      temporal-spec: 0.3.0
-
-  temporal-spec@0.3.0: {}
 
   test-exclude@6.0.0:
     dependencies:

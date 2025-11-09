@@ -51,7 +51,6 @@
     "@strapi/client": "^1.5.0",
     "@variablevic/mollie-payments-medusa": "^0.0.13",
     "jsonwebtoken": "^9.0.2",
-    "medusa-plugin-postmark": "^6.0.0",
     "medusa-variant-images": "^1.1.4",
     "minio": "^8.0.6",
     "pdfmake": "^0.2.20",
