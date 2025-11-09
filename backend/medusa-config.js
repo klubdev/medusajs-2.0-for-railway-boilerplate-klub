@@ -28,7 +28,9 @@ import {
   STRAPI_URL,
   STRAPI_API_KEY,
   SHOULD_EXPORT_CUSTOM_ATTRIBUTES,
-  KLAVIYO_API_KEY
+  POSTMARK_API_KEY,
+  POSTMARK_FROM,
+  POSTMARK_BCC
 } from 'lib/constants';
 
 loadEnv(process.env.NODE_ENV, process.cwd());
@@ -158,6 +160,25 @@ const medusaConfig = {
         ],
       },
     }] : []),
+    ...(POSTMARK_API_KEY ? [{
+      resolve: "@medusajs/notification",
+      options: {
+        providers: [
+          {
+            resolve: "medusa-plugin-postmark/providers/postmark",
+            id: "postmark",
+            options: {
+              channels: ["email"],
+              apiKey: POSTMARK_API_KEY,
+              default: {
+                from: POSTMARK_FROM,
+                bcc: POSTMARK_BCC,
+              }
+            },
+          },
+        ],
+      },
+    }] : []),
     {
       resolve: "./src/modules/bundled-product",
     },
@@ -204,11 +225,11 @@ const medusaConfig = {
         api_key: STRAPI_API_KEY
       }
     }] : []),
-    ...(KLAVIYO_API_KEY ? [{
-      resolve: "@eancarr/klaviyo-medusa",
+    ...(POSTMARK_API_KEY ? [{
+      resolve: "medusa-plugin-postmark",
       options: {
-        apiKey: process.env.KLAVIYO_API_KEY,
-      }
+        apiKey: POSTMARK_API_KEY,
+      },
     }] : []),
     {
       resolve: "medusa-variant-images",
