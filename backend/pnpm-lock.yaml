@@ -83,6 +83,9 @@ importers:
       '@strapi/client':
         specifier: ^1.5.0
         version: 1.5.0
+      '@variablevic/google-analytics-medusa':
+        specifier: ^0.1.1
+        version: 0.1.1(nifr6eyofvhsliba4ob6kezfee)
       '@variablevic/mollie-payments-medusa':
         specifier: ^0.0.13
         version: 0.0.13(5wrgruyasi2cvgjpsgh22lgpsi)
@@ -3868,6 +3871,25 @@ packages:
       '@babel/runtime': '>=7.10.0'
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
+
+  '@variablevic/google-analytics-medusa@0.1.1':
+    resolution: {integrity: sha512-bbUmpdr0hYVPDYKiLix9Sm/d+yuhF9xptLQ5Aev3kBt1Y4h2/k0XIFByW+K3WzMxD2Yaskp4GrsF+cU5qrorrg==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@medusajs/admin-sdk': 2.5.1
+      '@medusajs/cli': 2.5.1
+      '@medusajs/framework': 2.5.1
+      '@medusajs/icons': 2.5.1
+      '@medusajs/medusa': 2.5.1
+      '@medusajs/test-utils': 2.5.1
+      '@medusajs/ui': 4.0.3
+      '@mikro-orm/cli': 6.4.3
+      '@mikro-orm/core': 6.4.3
+      '@mikro-orm/knex': 6.4.3
+      '@mikro-orm/migrations': 6.4.3
+      '@mikro-orm/postgresql': 6.4.3
+      awilix: ^8.0.1
+      pg: ^8.13.0
 
   '@variablevic/mollie-payments-medusa@0.0.13':
     resolution: {integrity: sha512-wGJz5jRVucNKjtFVO/3+66CPZ8nNZVEz81mXrgIuhKcEI86q46Rkrs8A5AtxDabNVElAc1UkBTQnB/GBJcYVpA==}
@@ -12380,6 +12402,23 @@ snapshots:
       '@babel/runtime': 7.28.4
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+
+  '@variablevic/google-analytics-medusa@0.1.1(nifr6eyofvhsliba4ob6kezfee)':
+    dependencies:
+      '@medusajs/admin-sdk': 2.10.3
+      '@medusajs/cli': 2.10.3(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(@types/node@20.19.24)(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24))
+      '@medusajs/framework': 2.10.3(@medusajs/cli@2.10.3(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(@types/node@20.19.24)(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24)))(@mikro-orm/cli@6.4.3(pg@8.13.1))(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24))
+      '@medusajs/icons': 2.10.3(react@18.2.0)
+      '@medusajs/medusa': 2.10.3(5wuvpsufoawum4ceoryq5dbgtq)
+      '@medusajs/test-utils': 2.10.3(@medusajs/framework@2.10.3(@medusajs/cli@2.10.3(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(@types/node@20.19.24)(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24)))(@mikro-orm/cli@6.4.3(pg@8.13.1))(@mikro-orm/core@6.4.3)(@mikro-orm/knex@6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1))(@mikro-orm/migrations@6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1))(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(awilix@8.0.1)(ioredis@5.8.2)(pg@8.13.1)(vite@5.4.21(@types/node@20.19.24)))(@medusajs/medusa@2.10.3)(@mikro-orm/postgresql@6.4.3(@mikro-orm/core@6.4.3))(awilix@8.0.1)
+      '@medusajs/ui': 4.0.23(@types/react-dom@18.3.7(@types/react@18.3.26))(@types/react@18.3.26)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.9.3)
+      '@mikro-orm/cli': 6.4.3(pg@8.13.1)
+      '@mikro-orm/core': 6.4.3
+      '@mikro-orm/knex': 6.4.3(@mikro-orm/core@6.4.3)(pg@8.13.1)
+      '@mikro-orm/migrations': 6.4.3(@mikro-orm/core@6.4.3)(@types/node@20.19.24)(pg@8.13.1)
+      '@mikro-orm/postgresql': 6.4.3(@mikro-orm/core@6.4.3)
+      awilix: 8.0.1
+      pg: 8.13.1
 
   '@variablevic/mollie-payments-medusa@0.0.13(5wrgruyasi2cvgjpsgh22lgpsi)':
     dependencies:

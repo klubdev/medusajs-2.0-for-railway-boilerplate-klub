@@ -115,6 +115,6 @@ export const WORKER_MODE =
  */
 export const SHOULD_DISABLE_ADMIN = process.env.MEDUSA_DISABLE_ADMIN === 'true'
 export const SHOULD_EXPORT_CUSTOM_ATTRIBUTES = process.env.MEDUSA_CUSTOM_ATTRIBUTES === 'true'
-export const POSTMARK_API_KEY = process.env.POSTMARK_API_KEY;
-export const POSTMARK_FROM = process.env.POSTMARK_FROM;
-export const POSTMARK_BCC = process.env.POSTMARK_BCC;
+
+export const GOOGLE_ID = process.env.GOOGLE_ID;
+export const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
