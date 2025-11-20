@@ -60,13 +60,13 @@ export const generateInvoicePdfWorkflow = createWorkflow(
       countries
     }, (data) => {
       const order = data.orders[0]
-      
+
       if (order.billing_address?.country_code) {
         order.billing_address.country_code = data.countries.find(
           (country) => country.iso_2 === order.billing_address!.country_code
         )?.display_name || order.billing_address!.country_code
       }
-      
+
       if (order.shipping_address?.country_code) {
         order.shipping_address.country_code = data.countries.find(
           (country) => country.iso_2 === order.shipping_address!.country_code

@@ -29,7 +29,8 @@ import {
   STRAPI_API_KEY,
   SHOULD_EXPORT_CUSTOM_ATTRIBUTES,
   GOOGLE_API_KEY,
-  GOOGLE_ID
+  GOOGLE_ID,
+  MEDUSA_STOREFRONT_URL
 } from 'lib/constants';
 
 loadEnv(process.env.NODE_ENV, process.cwd());
@@ -55,6 +56,7 @@ const medusaConfig = {
   },
   admin: {
     backendUrl: BACKEND_URL,
+    storefrontUrl: MEDUSA_STOREFRONT_URL || "http://localhost:9000",
     disable: SHOULD_DISABLE_ADMIN,
   },
   modules: [
@@ -114,7 +116,7 @@ const medusaConfig = {
             }
           }] : []),
           ...(RESEND_API_KEY && RESEND_FROM_EMAIL ? [{
-            resolve: './src/modules/email-notifications',
+            resolve: "./src/modules/resend",
             id: 'resend',
             options: {
               channels: ['email'],

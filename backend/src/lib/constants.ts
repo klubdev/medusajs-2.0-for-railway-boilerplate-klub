@@ -118,3 +118,4 @@ export const SHOULD_EXPORT_CUSTOM_ATTRIBUTES = process.env.MEDUSA_CUSTOM_ATTRIBU
 
 export const GOOGLE_ID = process.env.GOOGLE_ID;
 export const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+export const MEDUSA_STOREFRONT_URL = process.env.MEDUSA_STOREFRONT_URL;

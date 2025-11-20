@@ -2,12 +2,12 @@ import { INotificationModuleService, IUserModuleService } from '@medusajs/framew
 import { Modules } from '@medusajs/framework/utils'
 import { SubscriberArgs, SubscriberConfig } from '@medusajs/framework'
 import { BACKEND_URL } from '../lib/constants'
-import { EmailTemplates } from '../modules/email-notifications/templates'
+
 
 export default async function userInviteHandler({
-    event: { data },
-    container,
-  }: SubscriberArgs<any>) {
+  event: { data },
+  container,
+}: SubscriberArgs<any>) {
 
   const notificationModuleService: INotificationModuleService = container.resolve(
     Modules.NOTIFICATION,
@@ -19,11 +19,11 @@ export default async function userInviteHandler({
     await notificationModuleService.createNotifications({
       to: invite.email,
       channel: 'email',
-      template: EmailTemplates.INVITE_USER,
+      template: 'user-invited',
       data: {
         emailOptions: {
-          replyTo: 'info@example.com',
-          subject: "You've been invited to Medusa!"
+          replyTo: 'development@kreatifklub.com',
+          subject: "You've been invited to Bon Beau Joli!"
         },
         inviteLink: `${BACKEND_URL}/app/invite?token=${invite.token}`,
         preview: 'The administration dashboard awaits...'
