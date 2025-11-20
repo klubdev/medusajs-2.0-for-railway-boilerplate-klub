@@ -12,9 +12,9 @@ export async function POST(
         await sendOrderConfirmationWorkflow(req.scope).run({ input: { id } })
     } catch (err) {
         console.error(err);
-        throw new MedusaError(
-            MedusaError.Types.INVALID_DATA,
-            `Failed to resend order: ${id}`
-        )
+        // throw new MedusaError(
+        //     MedusaError.Types.INVALID_DATA,
+        //     `Failed to resend order: ${id}`
+        // )
     }
 } 
