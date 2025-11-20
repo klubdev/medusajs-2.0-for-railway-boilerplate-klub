@@ -35,7 +35,7 @@ function СustomerCreatedEmailComponent({
   );
 }
 
-export const userInvitedEmail = (props: CustomerCreatedEmailProps) => (
+export const customerCreatedEmail = (props: CustomerCreatedEmailProps) => (
   <СustomerCreatedEmailComponent {...props} />
 );
 

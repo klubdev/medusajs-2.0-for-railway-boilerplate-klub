@@ -1,30 +1,33 @@
-import { 
-  AbstractNotificationProviderService, 
+import {
+  AbstractNotificationProviderService,
   MedusaError
 } from "@medusajs/framework/utils"
-import { 
-  ProviderSendNotificationDTO, 
+import {
+  ProviderSendNotificationDTO,
   ProviderSendNotificationResultsDTO,
   Logger
 } from "@medusajs/framework/types";
-import { 
-  CreateEmailOptions, 
+import {
+  CreateEmailOptions,
   Resend
 } from "resend";
 import { orderPlacedEmail } from "./emails/order-placed";
 import { userInvitedEmail } from "./emails/user-invited";
 import { passwordResetEmail } from "./emails/password-reset";
+import { customerCreatedEmail } from "./emails/customer-created";
 
 enum Templates {
   ORDER_PLACED = "order-placed",
   USER_INVITED = "user-invited",
   PASSWORD_RESET = "password-reset",
+  CUSTOMER_CREATED = "customer-created"
 }
 
-const templates: {[key in Templates]?: (props: unknown) => React.ReactNode} = {
+const templates: { [key in Templates]?: (props: unknown) => React.ReactNode } = {
   [Templates.ORDER_PLACED]: orderPlacedEmail,
   [Templates.USER_INVITED]: userInvitedEmail,
-  [Templates.PASSWORD_RESET]: passwordResetEmail
+  [Templates.PASSWORD_RESET]: passwordResetEmail,
+  [Templates.CUSTOMER_CREATED]: customerCreatedEmail,
 }
 
 type ResendOptions = {
@@ -47,7 +50,7 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
   private logger: Logger
 
   constructor(
-    { logger }: InjectedDependencies, 
+    { logger }: InjectedDependencies,
     options: ResendOptions
   ) {
     super()
@@ -89,13 +92,15 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
     if (this.options.html_templates?.[template]?.subject) {
       return this.options.html_templates[template].subject
     }
-    switch(template) {
+    switch (template) {
       case Templates.ORDER_PLACED:
         return "Order Confirmation"
       case Templates.USER_INVITED:
         return "You're Invited!"
       case Templates.PASSWORD_RESET:
         return "Reset Your Password"
+      case Templates.CUSTOMER_CREATED:
+        return "New Customer Created!"
       default:
         return "New Email"
     }
