@@ -73,8 +73,7 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       )
     }
   }
-
-
+  
   getTemplate(template: Templates) {
     if (this.options.html_templates?.[template]) {
       return this.options.html_templates[template].content

@@ -23,6 +23,6 @@ export async function GET(
     'Content-Disposition': `attachment; filename="invoice-${id}.pdf"`,
     'Content-Length': buffer.length
   })
-  
+
   res.send(buffer)
 } 
