@@ -13,7 +13,7 @@ export async function POST(
     } catch (err) {
         throw new MedusaError(
             MedusaError.Types.INVALID_DATA,
-            `Failed to resend order: ${id}`
+            `Failed to resend order: ${id} ${err}`
         )
     }
 } 
