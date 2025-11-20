@@ -18,9 +18,9 @@ export default async function createDefaultConfigLoader({
   }
 
   await service.create({
-    company_name: "Acme",
-    company_address: "123 Acme St, Springfield, USA",
-    company_phone: "+1 234 567 8900",
-    company_email: "admin@example.com",
+    company_name: "Bon Beau Joli",
+    company_address: "Bloemendaalseweg 139 2061 CH Bloemendaal The Netherlands",
+    company_phone: "",
+    company_email: "info@bonbeaujoli.com",
   })
 }

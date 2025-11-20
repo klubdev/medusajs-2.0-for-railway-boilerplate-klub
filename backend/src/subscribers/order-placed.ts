@@ -64,7 +64,7 @@ export default async function orderPlacedHandler({
     // Send Order Confirmation Workflow
     (async () => {
       try {
-        await sendOrderConfirmationWorkflow(container).run({ input: { id: data.id } })
+        await sendOrderConfirmationWorkflow(container).run({ input: { order_id: data.id } })
       } catch (err) {
         console.error("Failed to send order confirmation request:", err)
       }

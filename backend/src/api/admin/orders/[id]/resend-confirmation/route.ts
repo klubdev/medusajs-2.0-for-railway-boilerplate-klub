@@ -10,15 +10,15 @@ export async function POST(
 
     try {
         // ✅ Correct usage with input
-        await sendOrderConfirmationWorkflow(req.scope).run({ input: { id } })
-
+        const result = await sendOrderConfirmationWorkflow(req.scope).run({ input: { order_id : id} })
+        
         res.json({
-            message: `Order confirmation email resent for order ${id}`,
+            message: `Order confirmation email resent for order ${id}`
         })
     } catch (err) {
         throw new MedusaError(
             MedusaError.Types.INVALID_DATA,
-            `Failed to resend order ${id}: ${err}`
+            `Failed to resend order id: ${id}`
         )
     }
 } 

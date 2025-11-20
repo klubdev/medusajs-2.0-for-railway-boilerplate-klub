@@ -4,12 +4,12 @@ import { sendNotificationStep } from "./steps/send-notification";
 import { MEDUSA_STOREFRONT_URL } from '../lib/constants'
 
 type WorkflowInput = {
-  id: string
+  order_id: string
 }
 
 export const sendOrderConfirmationWorkflow = createWorkflow(
   "send-order-confirmation",
-  ({ id }: WorkflowInput) => {
+   (input: WorkflowInput) => {
     const { data: orders } = useQueryGraphStep({
       entity: "order",
       fields: [
@@ -33,7 +33,7 @@ export const sendOrderConfirmationWorkflow = createWorkflow(
         "item_tax_total",
       ],
       filters: {
-        id
+        id: input.order_id
       },
       options: {
         throwIfKeyNotFound: true
