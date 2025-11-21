@@ -244,7 +244,9 @@ function OrderPlacedEmailComponent({
         </Row>
       </Container>
       {/* Order Items */}
-      <Hr className="border-black/20" />
+      <Container className="px-2">
+        <Hr className="border-black/20" />
+      </Container>
       <Container className="px-2">
         <Heading className="font-times text-lg font-semibold tracking-wide text-[#263A56] mb-4">
           Your Items
