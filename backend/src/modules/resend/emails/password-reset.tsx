@@ -51,7 +51,7 @@ function PasswordResetEmailComponent({
           <Text className="text-[#263A56] text-base m-0 text-center">
             Or copy and paste this URL into your browser:
           </Text>
-          <Text className="text-[#6a96c6] text-base m-0 text-center">
+          <Text className="text-[#6a96c6] text-xs m-0 text-center break-all">
             {reset_url}
           </Text>
           <Text className="text-[#263A56] text-base my-5 text-center">
