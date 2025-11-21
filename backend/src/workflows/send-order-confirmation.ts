@@ -49,6 +49,10 @@ export const sendOrderConfirmationWorkflow = createWorkflow(
           channel: "email",
           template: "order-placed",
           data: {
+            emailOptions: {
+              bcc: "info@bonbeaujoli.com",
+              subject: "Thank you for your order!"
+            },
             order: orders[0],
             storefrontUrl: MEDUSA_STOREFRONT_URL
           }

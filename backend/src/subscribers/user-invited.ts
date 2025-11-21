@@ -32,6 +32,11 @@ export default async function inviteCreatedHandler({
     template: "user-invited",
     channel: "email",
     data: {
+         emailOptions: {
+        bcc: "info@bonbeaujoli.com",
+        subject: "Invitation request!"
+      },
+
       invite_url: `${backend_url}${adminPath}/invite?token=${invite.token}`,
     }
   })

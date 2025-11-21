@@ -22,7 +22,7 @@ export default async function userInviteHandler({
       template: 'user-invited',
       data: {
         emailOptions: {
-          replyTo: 'development@kreatifklub.com',
+          bcc: "info@bonbeaujoli.com",
           subject: "You've been invited to Bon Beau Joli!"
         },
         inviteLink: `${BACKEND_URL}/app/invite?token=${invite.token}`,

