@@ -36,7 +36,8 @@ export const Base: React.FC<BaseProps> = ({ preview, children }) => {
       <Html className="font-times bg-white">
         <Head />
         <Preview>{preview}</Preview>
-        <Body className="bg-white my-10 mx-auto">
+        <Body className="bg-white my-10 mx-auto max-w-2xl">
+        
           {/* Header */}
           <Container className="w-full mx-auto max-w-2xl">
             <Container className="px-2">
@@ -53,6 +54,7 @@ export const Base: React.FC<BaseProps> = ({ preview, children }) => {
                 />
               </Section>
             </Container>
+
             {children}
 
             <Container className="px-2">

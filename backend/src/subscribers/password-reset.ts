@@ -33,7 +33,6 @@ export default async function resetPasswordTokenHandler({
     template: "password-reset",
     data: {
       emailOptions: {
-        bcc: "info@bonbeaujoli.com",
         subject: "Request to reset password!"
       },
       email: email,

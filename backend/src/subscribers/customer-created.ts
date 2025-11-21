@@ -21,7 +21,6 @@ export default async function customerCreatedHandler({
             template: 'customer-created',
             data: {
                 emailOptions: {
-                    bcc: "info@bonbeaujoli.com",
                     subject: "New customer created at Bon Beau Joli!",
                 },
                 customer: customer,

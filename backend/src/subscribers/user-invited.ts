@@ -32,8 +32,7 @@ export default async function inviteCreatedHandler({
     template: "user-invited",
     channel: "email",
     data: {
-         emailOptions: {
-        bcc: "info@bonbeaujoli.com",
+      emailOptions: {
         subject: "Invitation request!"
       },
 
