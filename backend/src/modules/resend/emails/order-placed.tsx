@@ -130,13 +130,14 @@ function OrderPlacedEmailComponent({
               currency_code={order.currency_code}
             />
           )}
-          {order.gift_card_total != 0 && (
-            <OrderLineItem
-              label="Gift card"
-              amount={order.gift_card_total}
-              currency_code={order.currency_code}
-            />
-          )}
+          {order.gift_card_total != 0 ||
+            (order.gift_card_total > 0 && (
+              <OrderLineItem
+                label="Gift card"
+                amount={order.gift_card_total}
+                currency_code={order.currency_code}
+              />
+            ))}
 
           <Hr className="border-black/20" />
 
