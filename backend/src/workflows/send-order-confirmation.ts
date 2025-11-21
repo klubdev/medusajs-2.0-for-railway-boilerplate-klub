@@ -9,7 +9,7 @@ type WorkflowInput = {
 
 export const sendOrderConfirmationWorkflow = createWorkflow(
   "send-order-confirmation",
-   (input: WorkflowInput) => {
+  (input: WorkflowInput) => {
     const { data: orders } = useQueryGraphStep({
       entity: "order",
       fields: [
@@ -22,6 +22,7 @@ export const sendOrderConfirmationWorkflow = createWorkflow(
         "shipping_address.*",
         "billing_address.*",
         "shipping_methods.*",
+        "payment_collections.*",
         "customer.*",
         "total",
         "subtotal",

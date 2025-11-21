@@ -34,7 +34,6 @@ function OrderPlacedEmailComponent({
   preview = "Thank you for your order from Bon Beau Joli",
   storefrontUrl,
 }: OrderPlacedEmailProps) {
-
   const formatter = new Intl.NumberFormat([], {
     style: "currency",
     currencyDisplay: "narrowSymbol",
@@ -227,16 +226,18 @@ function OrderPlacedEmailComponent({
               ))}
             </Text>
           </Column>
-          <Column className="w-1/2">
-            <Text className="text-[#263A56] text-base font-semibold">
-              Payment method
-            </Text>
-            <Text className="text-[#263A56] text-base m-0">
-              {getPaymentInfo(
-                order?.payment_collections[0]?.payments[0]?.provider_id
-              ) || "Default"}
-            </Text>
-          </Column>
+          {order?.payment_collections?.length > 0 && (
+            <Column className="w-1/2">
+              <Text className="text-[#263A56] text-base font-semibold">
+                Payment method
+              </Text>
+              <Text className="text-[#263A56] text-base m-0">
+                {getPaymentInfo(
+                  order?.payment_collections[0]?.payments[0]?.provider_id
+                ) || "Default"}
+              </Text>
+            </Column>
+          )}
         </Row>
       </Container>
       {/* Order Items */}
