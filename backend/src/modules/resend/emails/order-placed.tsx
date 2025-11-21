@@ -226,18 +226,21 @@ function OrderPlacedEmailComponent({
               ))}
             </Text>
           </Column>
-          {order?.payment_collections?.length > 0 && (
-            <Column className="w-1/2">
-              <Text className="text-[#263A56] text-base font-semibold">
-                Payment method
-              </Text>
-              <Text className="text-[#263A56] text-base m-0">
-                {getPaymentInfo(
-                  order?.payment_collections[0]?.payments[0]?.provider_id
-                ) || "Default"}
-              </Text>
-            </Column>
-          )}
+          {Array.isArray(order?.payment_collections) &&
+            order.payment_collections.length > 0 && (
+              <Column className="w-1/2">
+                <Text className="text-[#263A56] text-base font-semibold">
+                  Payment method
+                </Text>
+                <Text className="text-[#263A56] text-base m-0">
+                  {order.payment_collections[0]?.payments?.[0]?.provider_id
+                    ? getPaymentInfo(
+                        order.payment_collections[0].payments[0].provider_id
+                      )
+                    : "Default"}
+                </Text>
+              </Column>
+            )}
         </Row>
       </Container>
       {/* Order Items */}
