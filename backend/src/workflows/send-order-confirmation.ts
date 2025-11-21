@@ -50,7 +50,7 @@ export const sendOrderConfirmationWorkflow = createWorkflow(
           template: "order-placed",
           data: {
             emailOptions: {
-              bcc: "info@bonbeaujoli.com",
+              bcc: "kristel@bonbeaujoli.com",
               subject: "Thank you for your order!"
             },
             order: orders[0],
