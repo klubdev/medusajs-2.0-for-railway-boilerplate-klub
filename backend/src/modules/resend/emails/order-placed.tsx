@@ -95,6 +95,7 @@ function OrderPlacedEmailComponent({
           </Heading>
           {order.items?.map((item) => (
             <OrderLineItem
+              key={item.id}
               label={item.product_title}
               amount={item.unit_price}
               prefix={`${item.quantity} x `}
