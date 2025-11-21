@@ -22,19 +22,19 @@ function UserInvitedEmailComponent({
 }: UserInvitedEmailProps) {
   return (
     <Base preview={preview}>
-      <Container className="px-2">
+      <Container className="px-2 text-center">
         <Heading className="font-times text-4xl font-normal tracking-wider text-center text-[#263A56]">
           Set up your account
         </Heading>
         <Hr className="border-black/20" />
       </Container>
 
-      <Container className="px-2">
+      <Container className="px-2 text-center">
         <Section className="my-2 text-center">
-          <Text className="text-[#263A56] text-base m-0">
+          <Text className="text-[#263A56] text-base m-0 text-center">
             Hello {email ? ` ${email}` : ""},
           </Text>
-          <Text className="text-[#263A56] text-base mt-4 mb-10">
+          <Text className="text-[#263A56] text-base mt-4 mb-10 text-center">
             You've been invited to join the Bon Beau Joli family. Click the
             button below to accept your invitation and set up your account.
           </Text>
@@ -47,13 +47,13 @@ function UserInvitedEmailComponent({
         </Section>
       </Container>
 
-      <Container className="px-2 mt-6">
+      <Container className="px-2 mt-6 text-center">
         <Section className="my-2 text-center">
-          <Text className="text-[#263A56] text-base m-0">
+          <Text className="text-[#263A56] text-base text-center m-0">
             Or copy and paste this URL into your browser:
           </Text>
-          <Text className="text-[#6a96c6] text-base m-0">{invite_url}</Text>
-          <Text className="text-[#263A56] text-base my-5">
+          <Text className="text-[#6a96c6] text-base text-center m-0">{invite_url}</Text>
+          <Text className="text-[#263A56] text-base text-center my-5">
             If you weren't expecting this invitation, you can ignore this email.
           </Text>
         </Section>
