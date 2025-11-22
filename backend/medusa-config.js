@@ -213,7 +213,7 @@ const medusaConfig = {
       options: {
         measurementId: GOOGLE_ID,
         apiSecret: GOOGLE_API_KEY,
-        debug: true,
+        debug: false,
       }
     }] : []),
     {
