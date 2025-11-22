@@ -32,10 +32,6 @@ export default async function inviteCreatedHandler({
     template: "user-invited",
     channel: "email",
     data: {
-      emailOptions: {
-        subject: "Invitation request!"
-      },
-
       invite_url: `${backend_url}${adminPath}/invite?token=${invite.token}`,
     }
   })

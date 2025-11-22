@@ -21,9 +21,6 @@ export default async function userInviteHandler({
       channel: 'email',
       template: 'user-invited',
       data: {
-        emailOptions: {
-          subject: "You've been invited to Bon Beau Joli!"
-        },
         inviteLink: `${BACKEND_URL}/app/invite?token=${invite.token}`,
         preview: 'The administration dashboard awaits...'
       }

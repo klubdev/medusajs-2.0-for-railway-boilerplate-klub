@@ -20,9 +20,6 @@ export default async function customerCreatedHandler({
             channel: 'email',
             template: 'customer-created',
             data: {
-                emailOptions: {
-                    subject: "New customer created at Bon Beau Joli!",
-                },
                 customer: customer,
                 preview: 'Welcome to the Bon Beau Joli family...'
             }

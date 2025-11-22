@@ -44,15 +44,12 @@ export const sendOrderConfirmationWorkflow = createWorkflow(
 
     const notification = when({ orders }, (data) => !!data.orders[0].email)
       .then(() => {
+        console.log()
         return sendNotificationStep([{
           to: orders[0].email!,
           channel: "email",
           template: "order-placed",
           data: {
-            emailOptions: {
-              bcc: "kristel@bonbeaujoli.com",
-              subject: "Thank you for your order!"
-            },
             order: orders[0],
             storefrontUrl: MEDUSA_STOREFRONT_URL
           }
@@ -62,12 +59,9 @@ export const sendOrderConfirmationWorkflow = createWorkflow(
           channel: "email",
           template: "order-placed",
           data: {
-            emailOptions: {
-              subject: `[BCC] Order Confirmation - ${orders[0].display_id}`
-            },
             order: orders[0],
-            storefrontUrl: MEDUSA_STOREFRONT_URL
-          }
+            storefrontUrl: MEDUSA_STOREFRONT_URL,
+          },
         }])
       })
 
