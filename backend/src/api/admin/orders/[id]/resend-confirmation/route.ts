@@ -1,7 +1,6 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { sendOrderConfirmationWorkflow } from "../../../../../workflows/send-order-confirmation"
 import { MedusaError } from "@medusajs/framework/utils";
-import { error } from "console";
 
 export async function POST(
     req: MedusaRequest,
