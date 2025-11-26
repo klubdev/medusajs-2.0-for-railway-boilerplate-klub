@@ -142,6 +142,15 @@ const medusaConfig = {
               capture: true,
             },
           },
+          {
+            resolve: './src/modules/payment-methods',
+            id: 'stripe',
+            options: {
+              apiKey: STRIPE_API_KEY,
+              webhookSecret: STRIPE_WEBHOOK_SECRET,
+              capture: true,
+            },
+          },
         ],
       },
     }] : []),
