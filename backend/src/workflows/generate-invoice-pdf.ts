@@ -18,6 +18,7 @@ export const generateInvoicePdfWorkflow = createWorkflow(
         "created_at",
         "currency_code",
         "total",
+        "email",
         "items.*",
         "items.variant.*",
         "items.variant.product.*",
@@ -27,6 +28,8 @@ export const generateInvoicePdfWorkflow = createWorkflow(
         "tax_total",
         "subtotal",
         "discount_total",
+        "payment_collections.*",
+        "payment_collections.payments.*",
       ],
       filters: {
         id: input.order_id

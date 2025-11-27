@@ -1,6 +1,7 @@
 import { MedusaService } from "@medusajs/framework/utils"
 import { InvoiceConfig } from "./models/invoice-config";
 import { Invoice } from "./models/invoice";
+// @ts-ignore - pdfmake doesn't have type definitions
 import PdfPrinter from "pdfmake"
 import { InferTypeOf, OrderDTO, OrderLineItemDTO } from "@medusajs/framework/types"
 
@@ -26,6 +27,8 @@ export interface InvoiceConfig {
   company_address: string
   company_phone: string
   company_email: string
+  company_kvk?: string
+  company_vat?: string
   notes?: string
 }
 
@@ -65,6 +68,18 @@ class InvoiceGeneratorService extends MedusaService({
     });
   }
 
+  private formatDate(date: Date | string): string {
+    const d = typeof date === 'string' ? new Date(date) : date
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ]
+    const day = d.getDate()
+    const month = months[d.getMonth()]
+    const year = d.getFullYear()
+    return `${day} ${month} ${year}`
+  }
+
   private async createInvoiceContent(
     params: GeneratePdfParams,
     invoice: InferTypeOf<typeof Invoice>
@@ -73,34 +88,98 @@ class InvoiceGeneratorService extends MedusaService({
     const invoiceConfigs = await this.listInvoiceConfigs()
     const config: Partial<InvoiceConfig> = invoiceConfigs[0] || {}
 
-    // Create table for order items
+    // Format invoice number as #80 instead of INV-000065
+    const invoiceId = `#${invoice.display_id}`
+    const invoiceDate = this.formatDate(invoice.created_at)
+    const orderDate = this.formatDate(params.order.created_at)
+
+    // Create table for order items with SKU and Description
     const itemsTable = [
       [
-        { text: 'Item', style: 'tableHeader' },
+        { text: 'Item Name', style: 'tableHeader' },
+        { text: 'Description', style: 'tableHeader' },
+        { text: 'SKU', style: 'tableHeader' },
         { text: 'Quantity', style: 'tableHeader' },
         { text: 'Unit Price', style: 'tableHeader' },
         { text: 'Total', style: 'tableHeader' }
       ],
-      ...(await Promise.all(params.items.map(async item => [
-        { text: item.title || 'Unknown Item', style: 'tableRow' },
-        { text: item.quantity.toString(), style: 'tableRow' },
-        {
-          text: await this.formatAmount(
-            item.unit_price,
-            params.order.currency_code
-          ), style: 'tableRow'
-        },
-        {
-          text: await this.formatAmount(
-            Number(item.total),
-            params.order.currency_code
-          ), style: 'tableRow'
-        }
-      ])))
+      ...(await Promise.all(params.items.map(async item => {
+        // Safely access variant data (may not be typed in OrderLineItemDTO)
+        const itemAny = item as any
+        const variant = itemAny.variant
+        const product = variant?.product
+        const sku = variant?.sku || itemAny.variant_sku || item.variant_id || 'N/A'
+        const description = item.title || 'Unknown Item'
+        const itemName = product?.title || item.title || 'Unknown Item'
+        
+        return [
+          { text: itemName, style: 'tableRow' },
+          { text: description, style: 'tableRow' },
+          { text: sku, style: 'tableRow' },
+          { text: item.quantity.toString(), style: 'tableRow' },
+          {
+            text: await this.formatAmount(
+              item.unit_price,
+              params.order.currency_code
+            ), style: 'tableRow'
+          },
+          {
+            text: await this.formatAmount(
+              Number(item.total),
+              params.order.currency_code
+            ), style: 'tableRow'
+          }
+        ]
+      })))
     ]
 
-    const invoiceId = `INV-${invoice.display_id.toString().padStart(6, '0')}`
-    const invoiceDate = new Date(invoice.created_at).toLocaleDateString()
+    // Get payment information (may not be available on OrderDTO)
+    const orderAny = params.order as any
+    const paymentCollections = orderAny.payment_collections || []
+    // Get first payment from first collection, or use collection itself
+    const paymentCollection = paymentCollections[0] || {}
+    const payments = paymentCollection.payments || []
+    const payment = payments[0] || paymentCollection
+    const paymentStatus = payment.status || paymentCollection.status || 'Captured'
+    const paymentMethod = payment.provider_id || paymentCollection.payment_providers?.[0]?.id || 'N/A'
+    const transactionDate = payment.created_at ? this.formatDate(payment.created_at) : (paymentCollection.created_at ? this.formatDate(paymentCollection.created_at) : orderDate)
+
+    // Build company address with KvK and VAT
+    const companyDetailsStack: any[] = []
+    if (config.company_address) {
+      companyDetailsStack.push({
+        text: config.company_address,
+        style: 'companyAddress',
+        margin: [0, 0, 0, 4]
+      })
+    }
+    if (config.company_kvk) {
+      companyDetailsStack.push({
+        text: `KvK (Chamber of Commerce) Number: ${config.company_kvk}`,
+        style: 'companyContact',
+        margin: [0, 0, 0, 4]
+      })
+    }
+    if (config.company_vat) {
+      companyDetailsStack.push({
+        text: `VAT Number: ${config.company_vat}`,
+        style: 'companyContact',
+        margin: [0, 0, 0, 0]
+      })
+    }
+
+    // Build billing address with email
+    const billingAddress = params.order.billing_address
+    const billingText = billingAddress
+      ? `${billingAddress.first_name || ''} ${billingAddress.last_name || ''}${params.order.email ? `\n${params.order.email}` : ''}\n${billingAddress.address_1 || ''}${billingAddress.address_2 ? `\n${billingAddress.address_2}` : ''}\n${billingAddress.city || ''}, ${billingAddress.province || ''} ${billingAddress.postal_code || ''}\n${billingAddress.country_code || ''}${billingAddress.phone ? `\n${billingAddress.phone}` : ''}`
+      : 'No billing address provided'
+
+    // Build shipping address with company name
+    const shippingAddress = params.order.shipping_address
+    const shippingCompany = (shippingAddress as any)?.company || ''
+    const shippingText = shippingAddress
+      ? `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}${shippingCompany ? `\n${shippingCompany}` : ''}\n${shippingAddress.address_1 || ''}${shippingAddress.address_2 ? `\n${shippingAddress.address_2}` : ''}\n${shippingAddress.city || ''}, ${shippingAddress.province || ''} ${shippingAddress.postal_code || ''}\n${shippingAddress.country_code || ''}${shippingAddress.phone ? `\n${shippingAddress.phone}` : ''}`
+      : 'No shipping address provided'
 
     // return the PDF content structure
     return {
@@ -109,16 +188,16 @@ class InvoiceGeneratorService extends MedusaService({
       header: {
         margin: [40, 20, 40, 0],
         columns: [
-          /** Company Logo */
+          /** Company Logo and Name */
           {
             width: '*',
             stack: [
               ...(config.company_logo ? [
                 {
                   image: await this.imageUrlToBase64(config.company_logo),
-                  width: 80,
-                  height: 40,
-                  fit: [80, 40],
+                  width: 100,
+                  height: 50,
+                  fit: [100, 50],
                   margin: [0, 0, 0, 10]
                 }
               ] : []),
@@ -129,13 +208,13 @@ class InvoiceGeneratorService extends MedusaService({
               }
             ]
           },
-          /** Invoice Title */
+          /** Invoice Number */
           {
             width: 'auto',
             stack: [
               {
-                text: 'INVOICE',
-                style: 'invoiceTitle',
+                text: invoiceId,
+                style: 'invoiceNumber',
                 alignment: 'right',
                 margin: [0, 0, 0, 0]
               }
@@ -144,43 +223,30 @@ class InvoiceGeneratorService extends MedusaService({
         ]
       },
       content: [
+        /** Company Details */
         {
           margin: [0, 20, 0, 0],
+          stack: [
+            ...companyDetailsStack
+          ]
+        },
+        {
+          text: '\n'
+        },
+        /** Invoice and Order Details */
+        {
           columns: [
-            /** Company Details */
             {
               width: '*',
-              stack: [
-                {
-                  text: 'COMPANY DETAILS',
-                  style: 'sectionHeader',
-                  margin: [0, 0, 0, 8]
-                },
-                config.company_address && {
-                  text: config.company_address,
-                  style: 'companyAddress',
-                  margin: [0, 0, 0, 4]
-                },
-                config.company_phone && {
-                  text: config.company_phone,
-                  style: 'companyContact',
-                  margin: [0, 0, 0, 4]
-                },
-                config.company_email && {
-                  text: config.company_email,
-                  style: 'companyContact',
-                  margin: [0, 0, 0, 0]
-                }
-              ]
+              text: ''
             },
-            /** Invoice Details */
             {
               width: 'auto',
               table: {
-                widths: [80, 120],
+                widths: [100, 150],
                 body: [
                   [
-                    { text: 'Invoice ID:', style: 'label' },
+                    { text: 'Invoice Number:', style: 'label' },
                     { text: invoiceId, style: 'value' }
                   ],
                   [
@@ -188,18 +254,8 @@ class InvoiceGeneratorService extends MedusaService({
                     { text: invoiceDate, style: 'value' }
                   ],
                   [
-                    { text: 'Order ID:', style: 'label' },
-                    {
-                      text: params.order.display_id.toString().padStart(6, '0'),
-                      style: 'value'
-                    }
-                  ],
-                  [
                     { text: 'Order Date:', style: 'label' },
-                    {
-                      text: new Date(params.order.created_at).toLocaleDateString(),
-                      style: 'value'
-                    }
+                    { text: orderDate, style: 'value' }
                   ]
                 ]
               },
@@ -218,17 +274,12 @@ class InvoiceGeneratorService extends MedusaService({
               width: '*',
               stack: [
                 {
-                  text: 'BILL TO',
+                  text: 'Bill To',
                   style: 'sectionHeader',
                   margin: [0, 0, 0, 8]
                 },
                 {
-                  text: params.order.billing_address ?
-                    `${params.order.billing_address.first_name || ''} ${params.order.billing_address.last_name || ''}
-                    ${params.order.billing_address.address_1 || ''}${params.order.billing_address.address_2 ? `\n${params.order.billing_address.address_2}` : ''}
-                    ${params.order.billing_address.city || ''}, ${params.order.billing_address.province || ''} ${params.order.billing_address.postal_code || ''}
-                    ${params.order.billing_address.country_code || ''}${params.order.billing_address.phone ? `\n${params.order.billing_address.phone}` : ''}` :
-                    'No billing address provided',
+                  text: billingText,
                   style: 'addressText'
                 }
               ]
@@ -237,17 +288,12 @@ class InvoiceGeneratorService extends MedusaService({
               width: '*',
               stack: [
                 {
-                  text: 'SHIP TO',
+                  text: 'Ship To',
                   style: 'sectionHeader',
                   margin: [0, 0, 0, 8]
                 },
                 {
-                  text: params.order.shipping_address ?
-                    `${params.order.shipping_address.first_name || ''} ${params.order.shipping_address.last_name || ''}
-                    ${params.order.shipping_address.address_1 || ''} ${params.order.shipping_address.address_2 ? `\n${params.order.shipping_address.address_2}` : ''}
-                    ${params.order.shipping_address.city || ''}, ${params.order.shipping_address.province || ''} ${params.order.shipping_address.postal_code || ''}
-                    ${params.order.shipping_address.country_code || ''}${params.order.shipping_address.phone ? `\n${params.order.shipping_address.phone}` : ''}` :
-                    'No shipping address provided',
+                  text: shippingText,
                   style: 'addressText'
                 }
               ]
@@ -261,7 +307,7 @@ class InvoiceGeneratorService extends MedusaService({
         {
           table: {
             headerRows: 1,
-            widths: ['*', 'auto', 'auto', 'auto'],
+            widths: ['*', '*', 'auto', 'auto', 'auto', 'auto'],
             body: itemsTable
           },
           layout: {
@@ -316,15 +362,6 @@ class InvoiceGeneratorService extends MedusaService({
                     }
                   ],
                   [
-                    { text: 'Tax:', style: 'totalLabel' },
-                    {
-                      text: await this.formatAmount(
-                        Number(params.order.tax_total),
-                        params.order.currency_code),
-                      style: 'totalValue'
-                    }
-                  ],
-                  [
                     { text: 'Shipping:', style: 'totalLabel' },
                     {
                       text: await this.formatAmount(
@@ -334,28 +371,28 @@ class InvoiceGeneratorService extends MedusaService({
                     }
                   ],
                   [
-                    { text: 'Discount:', style: 'totalLabel' },
+                    { text: `Tax (${Math.round((Number(params.order.tax_total) / Number(params.order.subtotal)) * 100)}% VAT):`, style: 'totalLabel' },
                     {
                       text: await this.formatAmount(
-                        Number(params.order.discount_total),
+                        Number(params.order.tax_total),
                         params.order.currency_code),
                       style: 'totalValue'
                     }
                   ],
                   [
-                    { text: 'Total:', style: 'totalLabel' },
+                    { text: 'Total:', style: 'totalLabelBold' },
                     {
                       text: await this.formatAmount(
                         Number(params.order.total),
                         params.order.currency_code),
-                      style: 'totalValue'
+                      style: 'totalValueBold'
                     }
                   ]
                 ]
               },
               layout: {
                 fillColor: function (rowIndex: number) {
-                  return (rowIndex === 3) ? '#f8f9fa' : null;
+                  return null;
                 },
                 hLineWidth: function (i: number, node: any) {
                   return (i === 0 || i === node.table.body.length) ? 0.8 : 0.3;
@@ -388,99 +425,141 @@ class InvoiceGeneratorService extends MedusaService({
         {
           text: '\n\n'
         },
-        /** Notes Section */
-        ...(config.notes ? [
-          {
-            text: 'Notes',
-            style: 'sectionHeader',
-            margin: [0, 20, 0, 10]
+        /** Payment Information */
+        {
+          table: {
+            widths: ['auto', '*'],
+            body: [
+              [
+                { text: 'Payment Status:', style: 'paymentLabel' },
+                { text: paymentStatus, style: 'paymentValue' }
+              ],
+              [
+                { text: 'Payment Method:', style: 'paymentLabel' },
+                { text: paymentMethod, style: 'paymentValue' }
+              ],
+              [
+                { text: 'Transaction Date:', style: 'paymentLabel' },
+                { text: transactionDate, style: 'paymentValue' }
+              ],
+              [
+                { text: 'Total Paid:', style: 'paymentLabel' },
+                {
+                  text: await this.formatAmount(
+                    Number(params.order.total),
+                    params.order.currency_code),
+                  style: 'paymentValue'
+                }
+              ]
+            ]
           },
-          {
-            text: config.notes,
-            style: 'notesText',
-            margin: [0, 0, 0, 20]
-          }
-        ] : []),
+          layout: 'noBorders',
+          margin: [0, 0, 0, 20]
+        },
+        {
+          text: '\n\n'
+        },
+        /** Footer */
         {
           text: 'Thank you for your business!',
           style: 'thankYouText',
           alignment: 'center',
-          margin: [0, 30, 0, 0]
+          margin: [0, 20, 0, 10]
+        },
+        {
+          text: 'For questions about this invoice, please contact us.',
+          style: 'footerText',
+          alignment: 'center',
+          margin: [0, 0, 0, 0]
         }
       ],
       styles: {
         companyName: {
-          fontSize: 22,
+          fontSize: 18,
           bold: true,
-          color: '#1a365d',
+          color: '#000000',
           margin: [0, 0, 0, 5]
         },
         companyAddress: {
-          fontSize: 11,
-          color: '#4a5568',
-          lineHeight: 1.3
+          fontSize: 10,
+          color: '#000000',
+          lineHeight: 1.4
         },
         companyContact: {
           fontSize: 10,
-          color: '#4a5568'
+          color: '#000000',
+          lineHeight: 1.4
         },
-        invoiceTitle: {
-          fontSize: 24,
+        invoiceNumber: {
+          fontSize: 20,
           bold: true,
-          color: '#2c3e50'
+          color: '#000000'
         },
         label: {
           fontSize: 10,
-          color: '#6c757d',
+          color: '#666666',
           margin: [0, 0, 8, 0]
         },
         value: {
           fontSize: 10,
           bold: true,
-          color: '#2c3e50'
+          color: '#000000'
         },
         sectionHeader: {
-          fontSize: 12,
+          fontSize: 11,
           bold: true,
-          color: '#2c3e50',
-          backgroundColor: '#f8f9fa',
-          padding: [8, 12]
+          color: '#000000',
+          margin: [0, 0, 0, 0]
         },
         addressText: {
           fontSize: 10,
-          color: '#495057',
-          lineHeight: 1.3
+          color: '#000000',
+          lineHeight: 1.4
         },
         tableHeader: {
           fontSize: 10,
           bold: true,
-          color: '#ffffff',
-          fillColor: '#495057'
+          color: '#000000',
+          fillColor: '#f5f5f5'
         },
         tableRow: {
           fontSize: 9,
-          color: '#495057'
+          color: '#000000'
         },
         totalLabel: {
           fontSize: 10,
-          bold: true,
-          color: '#495057'
+          color: '#000000'
         },
         totalValue: {
           fontSize: 10,
-          bold: true,
-          color: '#2c3e50'
+          color: '#000000'
         },
-        notesText: {
+        totalLabelBold: {
           fontSize: 10,
-          color: '#6c757d',
-          italics: true,
-          lineHeight: 1.4
+          bold: true,
+          color: '#000000'
+        },
+        totalValueBold: {
+          fontSize: 10,
+          bold: true,
+          color: '#000000'
+        },
+        paymentLabel: {
+          fontSize: 10,
+          color: '#666666'
+        },
+        paymentValue: {
+          fontSize: 10,
+          color: '#000000'
         },
         thankYouText: {
           fontSize: 12,
           color: '#28a745',
           italics: true
+        },
+        footerText: {
+          fontSize: 9,
+          color: '#666666'
         }
       },
       defaultStyle: {

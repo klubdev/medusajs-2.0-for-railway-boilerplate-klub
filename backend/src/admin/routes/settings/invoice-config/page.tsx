@@ -22,6 +22,8 @@ type InvoiceConfig = {
   company_phone: string;
   company_email: string;
   company_logo?: string;
+  company_kvk?: string;
+  company_vat?: string;
   notes?: string;
 };
 
@@ -31,6 +33,8 @@ const schema = zod.object({
   company_phone: zod.string().optional(),
   company_email: zod.string().email().optional(),
   company_logo: zod.string().url().optional(),
+  company_kvk: zod.string().optional(),
+  company_vat: zod.string().optional(),
   notes: zod.string().optional(),
 });
 
@@ -60,6 +64,8 @@ const InvoiceConfigPage = () => {
       company_phone: data?.invoice_config.company_phone || "",
       company_email: data?.invoice_config.company_email || "",
       company_logo: data?.invoice_config.company_logo || "",
+      company_kvk: data?.invoice_config.company_kvk || "",
+      company_vat: data?.invoice_config.company_vat || "",
       notes: data?.invoice_config.notes || "",
     };
   }, [data]);
@@ -158,6 +164,38 @@ const InvoiceConfigPage = () => {
                   <div className="flex items-center gap-x-1">
                     <Label size="small" weight="plus">
                       Company Email
+                    </Label>
+                  </div>
+                  <Input {...field} />
+                </div>
+              );
+            }}
+          />
+          <Controller
+            control={form.control}
+            name="company_kvk"
+            render={({ field }) => {
+              return (
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center gap-x-1">
+                    <Label size="small" weight="plus">
+                      KvK (Chamber of Commerce) Number
+                    </Label>
+                  </div>
+                  <Input {...field} />
+                </div>
+              );
+            }}
+          />
+          <Controller
+            control={form.control}
+            name="company_vat"
+            render={({ field }) => {
+              return (
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center gap-x-1">
+                    <Label size="small" weight="plus">
+                      VAT Number
                     </Label>
                   </div>
                   <Input {...field} />

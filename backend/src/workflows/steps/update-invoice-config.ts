@@ -9,6 +9,8 @@ type StepInput = {
   company_phone?: string
   company_email?: string
   company_logo?: string
+  company_kvk?: string
+  company_vat?: string
   notes?: string
 }
 
@@ -41,7 +43,10 @@ export const updateInvoiceConfigStep = createStep(
       company_address: prevInvoiceConfig.company_address,
       company_phone: prevInvoiceConfig.company_phone,
       company_email: prevInvoiceConfig.company_email,
-      company_logo: prevInvoiceConfig.company_logo
+      company_logo: prevInvoiceConfig.company_logo,
+      company_kvk: prevInvoiceConfig.company_kvk,
+      company_vat: prevInvoiceConfig.company_vat,
+      notes: prevInvoiceConfig.notes
     })
   }
 )

@@ -32,6 +32,8 @@ export const PostInvoiceConfgSchema = z.object({
   company_phone: z.string().optional(),
   company_email: z.string().optional(),
   company_logo: z.string().optional(),
+  company_kvk: z.string().optional(),
+  company_vat: z.string().optional(),
   notes: z.string().optional(),
 })
 
