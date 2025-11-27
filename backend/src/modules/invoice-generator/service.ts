@@ -41,10 +41,8 @@ class InvoiceGeneratorService extends MedusaService({
   }): Promise<Buffer> {
     const invoice = await this.retrieveInvoice(params.invoice_id)
 
-    // Generate new content
-    const pdfContent = Object.keys(invoice.pdfContent).length ?
-      invoice.pdfContent :
-      await this.createInvoiceContent(params, invoice)
+    // Always regenerate content to ensure latest layout is used
+    const pdfContent = await this.createInvoiceContent(params, invoice)
 
     await this.updateInvoices({
       id: invoice.id,
