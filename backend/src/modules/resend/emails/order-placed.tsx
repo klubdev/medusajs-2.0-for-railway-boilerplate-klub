@@ -55,9 +55,10 @@ function OrderPlacedEmailComponent({
   const getPaymentInfo = (type: string) => {
     const items = {
       pp_stripe_stripe: "Credit card",
+      "pp_stripe-klarna_stripe": "Klarna",
+      "pp_stripe-paypal_stripe": "PayPal",
       "pp_stripe-ideal_stripe": "iDeal",
       "pp_stripe-bancontact_stripe": "Bancontact",
-      pp_paypal_paypal: "PayPal",
       pp_system_default: "Manual Payment",
     };
 
