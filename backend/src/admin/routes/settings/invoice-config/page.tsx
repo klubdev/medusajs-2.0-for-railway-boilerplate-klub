@@ -193,13 +193,15 @@ const InvoiceConfigPage = () => {
                     </Label>
                   </div>
                   <Input type="file" onChange={uploadLogo} className="py-1" />
-                  {field.value && (
-                    <img
-                      src={field.value}
-                      alt="Company Logo"
-                      className="mt-2 h-24 w-24"
-                    />
-                  )}
+                  <div className="w-44 flex item-center overflow-hidden rounded-md">
+                    {field.value && (
+                      <img
+                        src={field.value}
+                        alt="Company Logo"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
                 </div>
               );
             }}

@@ -2,21 +2,42 @@ import { MedusaService } from "@medusajs/framework/utils"
 import { InvoiceConfig } from "./models/invoice-config";
 import { Invoice } from "./models/invoice";
 import PdfPrinter from "pdfmake"
-import { InferTypeOf, OrderDTO, OrderLineItemDTO } from "@medusajs/framework/types"
+import { InferTypeOf, OrderDTO, OrderLineItemDTO, PaymentCollectionDTO } from "@medusajs/framework/types"
 
 const fonts = {
+  Courier: {
+    normal: 'Courier',
+    bold: 'Courier-Bold',
+    italics: 'Courier-Oblique',
+    bolditalics: 'Courier-BoldOblique'
+  },
   Helvetica: {
     normal: 'Helvetica',
     bold: 'Helvetica-Bold',
     italics: 'Helvetica-Oblique',
     bolditalics: 'Helvetica-BoldOblique'
   },
+  Times: {
+    normal: 'Times-Roman',
+    bold: 'Times-Bold',
+    italics: 'Times-Italic',
+    bolditalics: 'Times-BoldItalic'
+  },
+  Symbol: {
+    normal: 'Symbol'
+  },
+  ZapfDingbats: {
+    normal: 'ZapfDingbats'
+  }
 }
+
 
 const printer = new PdfPrinter(fonts)
 
 type GeneratePdfParams = {
-  order: OrderDTO
+  order: OrderDTO & {
+    payment_collections: PaymentCollectionDTO;
+  }
   items: OrderLineItemDTO[]
 }
 
@@ -76,13 +97,17 @@ class InvoiceGeneratorService extends MedusaService({
     // Create table for order items
     const itemsTable = [
       [
-        { text: 'Item', style: 'tableHeader' },
+        { text: 'Item name', style: 'tableHeader' },
+        { text: 'Variant Name', style: 'tableHeader' },
+        { text: 'SKU', style: 'tableHeader' },
         { text: 'Quantity', style: 'tableHeader' },
         { text: 'Unit Price', style: 'tableHeader' },
         { text: 'Total', style: 'tableHeader' }
       ],
       ...(await Promise.all(params.items.map(async item => [
-        { text: item.title || 'Unknown Item', style: 'tableRow' },
+        { text: item.title || 'Unknown Name', style: 'tableRow' },
+        { text: item.variant_title || 'Unknown name', style: 'tableRow' },
+        { text: item.variant_sku || 'Unknown SKU', style: 'tableRow' },
         { text: item.quantity.toString(), style: 'tableRow' },
         {
           text: await this.formatAmount(
@@ -99,15 +124,26 @@ class InvoiceGeneratorService extends MedusaService({
       ])))
     ]
 
-    const invoiceId = `INV-${invoice.display_id.toString().padStart(6, '0')}`
-    const invoiceDate = new Date(invoice.created_at).toLocaleDateString()
+
+    const invoiceId = `#${invoice.display_id.toString()}`
+    const invoiceDate = new Date(invoice.updated_at).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    })
+
+    const orderDate = new Date(invoice.created_at).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    })
 
     // return the PDF content structure
     return {
       pageSize: 'A4',
-      pageMargins: [40, 60, 40, 60],
+      pageMargins: [20, 60, 20, 60],
       header: {
-        margin: [40, 20, 40, 0],
+        margin: [20, 20, 30, 20],
         columns: [
           /** Company Logo */
           {
@@ -119,14 +155,9 @@ class InvoiceGeneratorService extends MedusaService({
                   width: 80,
                   height: 40,
                   fit: [80, 40],
-                  margin: [0, 0, 0, 10]
+
                 }
-              ] : []),
-              {
-                text: config.company_name || 'Your Company Name',
-                style: 'companyName',
-                margin: [0, 0, 0, 0]
-              }
+              ] : [])
             ]
           },
           /** Invoice Title */
@@ -134,10 +165,9 @@ class InvoiceGeneratorService extends MedusaService({
             width: 'auto',
             stack: [
               {
-                text: 'INVOICE',
+                text: invoiceId,
                 style: 'invoiceTitle',
-                alignment: 'right',
-                margin: [0, 0, 0, 0]
+                alignment: 'right'
               }
             ]
           }
@@ -151,10 +181,10 @@ class InvoiceGeneratorService extends MedusaService({
             {
               width: '*',
               stack: [
-                {
-                  text: 'COMPANY DETAILS',
-                  style: 'sectionHeader',
-                  margin: [0, 0, 0, 8]
+                config.company_name && {
+                  text: config.company_name,
+                  style: 'companyName',
+                  margin: [0, 0, 0, 4]
                 },
                 config.company_address && {
                   text: config.company_address,
@@ -169,7 +199,7 @@ class InvoiceGeneratorService extends MedusaService({
                 config.company_email && {
                   text: config.company_email,
                   style: 'companyContact',
-                  margin: [0, 0, 0, 0]
+                  margin: [0, 0, 0, 4]
                 }
               ]
             },
@@ -180,27 +210,20 @@ class InvoiceGeneratorService extends MedusaService({
                 widths: [80, 120],
                 body: [
                   [
-                    { text: 'Invoice ID:', style: 'label' },
-                    { text: invoiceId, style: 'value' }
+                    { text: 'Order ID:', style: 'label' },
+                    {
+                      text: invoiceId,
+                      style: 'value'
+                    }
                   ],
                   [
                     { text: 'Invoice Date:', style: 'label' },
                     { text: invoiceDate, style: 'value' }
                   ],
                   [
-                    { text: 'Order ID:', style: 'label' },
-                    {
-                      text: params.order.display_id.toString().padStart(6, '0'),
-                      style: 'value'
-                    }
-                  ],
-                  [
                     { text: 'Order Date:', style: 'label' },
-                    {
-                      text: new Date(params.order.created_at).toLocaleDateString(),
-                      style: 'value'
-                    }
-                  ]
+                    { text: orderDate, style: 'value' }
+                  ],
                 ]
               },
               layout: 'noBorders',
@@ -218,9 +241,9 @@ class InvoiceGeneratorService extends MedusaService({
               width: '*',
               stack: [
                 {
-                  text: 'BILL TO',
+                  text: 'Billing address',
                   style: 'sectionHeader',
-                  margin: [0, 0, 0, 8]
+                  margin: [0, 20, 0, 8]
                 },
                 {
                   text: params.order.billing_address ?
@@ -237,9 +260,9 @@ class InvoiceGeneratorService extends MedusaService({
               width: '*',
               stack: [
                 {
-                  text: 'SHIP TO',
+                  text: 'Shipping address',
                   style: 'sectionHeader',
-                  margin: [0, 0, 0, 8]
+                  margin: [0, 20, 0, 8]
                 },
                 {
                   text: params.order.shipping_address ?
@@ -261,24 +284,24 @@ class InvoiceGeneratorService extends MedusaService({
         {
           table: {
             headerRows: 1,
-            widths: ['*', 'auto', 'auto', 'auto'],
+            widths: ['*', '*', 'auto', 'auto', 'auto', 'auto'],
             body: itemsTable
           },
           layout: {
             fillColor: function (rowIndex: number) {
-              return (rowIndex === 0) ? '#f8f9fa' : null;
+              return (rowIndex === 0) ? '#e5e7eb' : null;
             },
             hLineWidth: function (i: number, node: any) {
-              return (i === 0 || i === node.table.body.length) ? 0.8 : 0.3;
+              return (i === 0 || i === node.table.body.length) ? 0.5 : 0.3;
             },
             vLineWidth: function (i: number, node: any) {
               return 0.3;
             },
             hLineColor: function (i: number, node: any) {
-              return (i === 0 || i === node.table.body.length) ? '#cbd5e0' : '#e2e8f0';
+              return (i === 0 || i === node.table.body.length) ? '#e5e7eb' : '#e5e7eb';
             },
             vLineColor: function () {
-              return '#e2e8f0';
+              return '#e5e7eb';
             },
             paddingLeft: function () {
               return 8;
@@ -355,19 +378,19 @@ class InvoiceGeneratorService extends MedusaService({
               },
               layout: {
                 fillColor: function (rowIndex: number) {
-                  return (rowIndex === 3) ? '#f8f9fa' : null;
+                  return null;
                 },
                 hLineWidth: function (i: number, node: any) {
-                  return (i === 0 || i === node.table.body.length) ? 0.8 : 0.3;
+                  return (i === 0 || i === node.table.body.length) ? 0.5 : 0.3;
                 },
                 vLineWidth: function () {
                   return 0.3;
                 },
                 hLineColor: function (i: number, node: any) {
-                  return (i === 0 || i === node.table.body.length) ? '#cbd5e0' : '#e2e8f0';
+                  return (i === 0 || i === node.table.body.length) ? '#e5e7eb' : '#e5e7eb';
                 },
                 vLineColor: function () {
-                  return '#e2e8f0';
+                  return '#e5e7eb';
                 },
                 paddingLeft: function () {
                   return 8;
@@ -386,7 +409,58 @@ class InvoiceGeneratorService extends MedusaService({
           ]
         },
         {
-          text: '\n\n'
+          text: '\n'
+        },
+        {
+          columns: [
+            {
+              width: 'auto',
+              margin: [0, 20, 0, 0],
+              stack: [
+                { text: 'Payment status', style: 'totalLabelLine', margin: [0, 0, 8, 4] },
+                { text: 'Payment method', style: 'totalLabelLine', margin: [0, 0, 8, 4] },
+                { text: 'Transaction date', style: 'totalLabelLine', margin: [0, 0, 8, 4] },
+                { text: 'Total Paid:', style: 'totalLabelLine', margin: [0, 0, 8, 4] },
+              ]
+            },
+            {
+              width: 'auto',
+              margin: [0, 20, 0, 0],
+              stack: [
+                {
+                  text: params.order.payment_collections?.status || 'no status',
+                  style: 'totalValue',
+                  margin: [0, 0, 0, 4]
+                },
+                {
+                  text: params.order.payment_collections[0]?.payments?.[0]?.provider_id
+                    ? await this.getPaymentInfo(
+                      params.order.payment_collections[0].payments[0].provider_id
+                    )
+                    : "default payment system",
+                  style: 'totalValue',
+                  margin: [0, 0, 0, 4]
+                },
+                {
+                  text: params.order?.payment_collections?.completed_at ?
+                    new Date(params.order?.payment_collections?.completed_at).toLocaleDateString('en-GB', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    }) : 'no transaction date',
+                  style: 'totalValue',
+                  margin: [0, 0, 0, 4]
+                },
+                {
+                  text: await this.formatAmount(
+                    Number(params.order?.payment_collections?.amount || 0),
+                    params.order.currency_code),
+                  style: 'totalValue',
+                  margin: [0, 0, 0, 4]
+                }
+              ]
+            }
+          ]
         },
         /** Notes Section */
         ...(config.notes ? [
@@ -402,89 +476,108 @@ class InvoiceGeneratorService extends MedusaService({
           }
         ] : []),
         {
-          text: 'Thank you for your business!',
+          text: 'Thank you for your purchases!',
           style: 'thankYouText',
           alignment: 'center',
           margin: [0, 30, 0, 0]
+        },
+        {
+          text: 'For questions about this invoice, please contact us!',
+          style: 'notesText',
+          alignment: 'center',
+          margin: [0, 10, 0, 0]
         }
       ],
       styles: {
         companyName: {
-          fontSize: 22,
+          fontSize: 11,
+          italics: true,
           bold: true,
-          color: '#1a365d',
-          margin: [0, 0, 0, 5]
+          lineHeight: 1.3,
+          color: '#2B2E43'
         },
         companyAddress: {
           fontSize: 11,
-          color: '#4a5568',
+          color: '#2B2E43',
           lineHeight: 1.3
         },
         companyContact: {
-          fontSize: 10,
-          color: '#4a5568'
+          fontSize: 11,
+          bold: true,
+          color: '#2B2E43',
+          lineHeight: 1.3
         },
         invoiceTitle: {
           fontSize: 24,
           bold: true,
-          color: '#2c3e50'
+          color: '#2B2E43'
         },
         label: {
           fontSize: 10,
-          color: '#6c757d',
+          color: 'B9BACE',
           margin: [0, 0, 8, 0]
         },
         value: {
           fontSize: 10,
           bold: true,
-          color: '#2c3e50'
+          color: '#2B2E43'
         },
         sectionHeader: {
           fontSize: 12,
           bold: true,
-          color: '#2c3e50',
-          backgroundColor: '#f8f9fa',
+          color: '#2B2E43',
+          backgroundColor: '#e5e7eb',
           padding: [8, 12]
         },
         addressText: {
           fontSize: 10,
-          color: '#495057',
+          color: '#2B2E43',
           lineHeight: 1.3
         },
         tableHeader: {
           fontSize: 10,
           bold: true,
-          color: '#ffffff',
-          fillColor: '#495057'
+          color: '#2B2E43',
+          fillColor: '#e5e7eb'
         },
         tableRow: {
           fontSize: 9,
-          color: '#495057'
+          color: '#2B2E43'
+        },
+        totalLabelLine: {
+          fontSize: 10,
+          bold: false,
+          color: '#2B2E43'
         },
         totalLabel: {
           fontSize: 10,
           bold: true,
-          color: '#495057'
+          color: '#2B2E43'
+        },
+        contentLabel: {
+          fontSize: 10,
+          bold: false,
+          color: '#e5e7eb'
         },
         totalValue: {
           fontSize: 10,
           bold: true,
-          color: '#2c3e50'
+          color: '#2B2E43'
         },
         notesText: {
           fontSize: 10,
-          color: '#6c757d',
-          italics: true,
-          lineHeight: 1.4
+          color: '#2B2E43',
+          italics: false,
+          lineHeight: 1.2
         },
         thankYouText: {
           fontSize: 12,
-          color: '#28a745',
+          color: '#2B2E43',
           italics: true
         }
       },
       defaultStyle: {
-        font: 'Helvetica'
+        font: 'Times'
       }
     }
   }
@@ -503,6 +596,20 @@ class InvoiceGeneratorService extends MedusaService({
     const mimeType = response.headers.get("content-type") || "image/png"
 
     return `data:${mimeType};base64,${base64}`
+  }
+
+
+  private async getPaymentInfo(type: string) {
+    const items = {
+      pp_stripe_stripe: "Credit card",
+      "pp_stripe-klarna_stripe": "Klarna",
+      "pp_stripe-paypal_stripe": "PayPal",
+      "pp_stripe-ideal_stripe": "iDeal",
+      "pp_stripe-bancontact_stripe": "Bancontact",
+      pp_system_default: "Manual Payment",
+    };
+
+    return items[type] || "Default";
   }
 }
 
