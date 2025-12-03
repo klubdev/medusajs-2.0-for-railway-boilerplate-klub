@@ -107,7 +107,7 @@ function OrderPlacedEmailComponent({
 
           <OrderLineItem
             label="Subtotal (excl. shipping)"
-            amount={order.subtotal}
+            amount={order.original_item_total}
             currency_code={order.currency_code}
           />
           {order.discount_total != 0 && (

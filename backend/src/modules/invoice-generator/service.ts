@@ -330,28 +330,10 @@ class InvoiceGeneratorService extends MedusaService({
                 widths: ['auto', 'auto'],
                 body: [
                   [
-                    { text: 'Subtotal:', style: 'totalLabel' },
+                    { text: 'Subtotal (excl. shipping):', style: 'totalLabel' },
                     {
                       text: await this.formatAmount(
-                        Number(params.order.subtotal),
-                        params.order.currency_code),
-                      style: 'totalValue'
-                    }
-                  ],
-                  [
-                    { text: 'Tax:', style: 'totalLabel' },
-                    {
-                      text: await this.formatAmount(
-                        Number(params.order.tax_total),
-                        params.order.currency_code),
-                      style: 'totalValue'
-                    }
-                  ],
-                  [
-                    { text: 'Shipping:', style: 'totalLabel' },
-                    {
-                      text: await this.formatAmount(
-                        Number(params.order.shipping_methods?.[0]?.total || 0),
+                        Number(params.order.original_item_total),
                         params.order.currency_code),
                       style: 'totalValue'
                     }
@@ -361,6 +343,24 @@ class InvoiceGeneratorService extends MedusaService({
                     {
                       text: await this.formatAmount(
                         Number(params.order.discount_total),
+                        params.order.currency_code),
+                      style: 'totalValue'
+                    }
+                  ],
+                  [
+                    { text: 'Shipping Costs:', style: 'totalLabel' },
+                    {
+                      text: await this.formatAmount(
+                        Number(params.order.shipping_total || 0),
+                        params.order.currency_code),
+                      style: 'totalValue'
+                    }
+                  ],
+                  [
+                    { text: 'Taxes included in price:', style: 'totalLabel' },
+                    {
+                      text: await this.formatAmount(
+                        Number(params.order.tax_total),
                         params.order.currency_code),
                       style: 'totalValue'
                     }
