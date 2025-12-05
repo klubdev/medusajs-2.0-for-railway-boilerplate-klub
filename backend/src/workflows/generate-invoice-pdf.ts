@@ -19,15 +19,16 @@ export const generateInvoicePdfWorkflow = createWorkflow(
         "updated_at",
         "email",
         "currency_code",
-        "total",
+        "metadata",
         "items.*",
         "items.variant.*",
         "items.variant.product.*",
         "shipping_address.*",
         "billing_address.*",
         "shipping_methods.*",
-        "payment_collections",
-        "payment_collections.payments",
+        "payment_collections.*",
+        "payment_collections.payments.*",
+        "payment_collections.payment_providers.*",
         "customer.*",
         "total",
         "subtotal",
@@ -37,6 +38,8 @@ export const generateInvoicePdfWorkflow = createWorkflow(
         "item_subtotal",
         "item_total",
         "item_tax_total",
+        "gift_card_total",
+        "original_item_total",
       ],
       filters: {
         id: input.order_id
@@ -45,10 +48,8 @@ export const generateInvoicePdfWorkflow = createWorkflow(
         throwIfKeyNotFound: true
       }
     })
-    
-    const countryFilters = transform({
-      orders
-    }, (data) => {
+
+    const countryFilters = transform({ orders }, (data) => {
       const country_codes: string[] = []
       if (data.orders[0].billing_address?.country_code) {
         country_codes.push(data.orders[0].billing_address.country_code)
@@ -58,6 +59,7 @@ export const generateInvoicePdfWorkflow = createWorkflow(
       }
       return country_codes
     })
+
     const { data: countries } = useQueryGraphStep({
       entity: "country",
       fields: ["display_name", "iso_2"],
@@ -66,10 +68,7 @@ export const generateInvoicePdfWorkflow = createWorkflow(
       }
     }).config({ name: "retrieve-countries" })
 
-    const transformedOrder = transform({
-      orders,
-      countries
-    }, (data) => {
+    const transformedOrder = transform({ orders, countries }, (data) => {
       const order = data.orders[0]
 
       if (order.billing_address?.country_code) {
@@ -96,7 +95,7 @@ export const generateInvoicePdfWorkflow = createWorkflow(
       items: transformedOrder.items,
       invoice_id: invoice.id
     } as unknown as GenerateInvoicePdfStepInput)
-
+    
     return new WorkflowResponse({
       pdf_buffer
     })

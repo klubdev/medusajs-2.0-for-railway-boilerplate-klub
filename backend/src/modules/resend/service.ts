@@ -73,7 +73,7 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       )
     }
   }
-  
+
   getTemplate(template: Templates) {
     if (this.options.html_templates?.[template]) {
       return this.options.html_templates[template].content
@@ -115,25 +115,34 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       return {}
     }
 
+    const subject = notification.template == Templates.ORDER_PLACED ?
+      `Order #${notification.data?.order?.display_id as string} Confirmation | Bon Beau Joli` :
+      this.getTemplateSubject(notification.template as Templates)
+
     const commonOptions = {
       from: this.options.from,
       to: [notification.to],
-      subject: this.getTemplateSubject(notification.template as Templates),
+      subject: subject,
     }
 
     let emailOptions: CreateEmailOptions
+
+    const attachments = notification?.attachments || []
+
     if (typeof template === "string") {
       emailOptions = {
         ...commonOptions,
         html: template,
+        attachments
       }
     } else {
       emailOptions = {
         ...commonOptions,
         react: template(notification.data),
+        attachments
       }
     }
-
+   
     const { data, error } = await this.resendClient.emails.send(emailOptions)
 
     if (error || !data) {

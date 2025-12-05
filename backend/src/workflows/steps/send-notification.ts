@@ -8,6 +8,7 @@ export const sendNotificationStep = createStep(
     const notificationModuleService = container.resolve(
       Modules.NOTIFICATION
     )
+    
     const notification = await notificationModuleService.createNotifications(data)
     return new StepResponse(notification)
   }

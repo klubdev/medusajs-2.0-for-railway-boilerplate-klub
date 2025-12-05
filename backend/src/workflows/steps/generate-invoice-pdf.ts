@@ -1,10 +1,12 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { INVOICE_MODULE } from "../../modules/invoice-generator"
-import { OrderDTO, OrderLineItemDTO } from "@medusajs/framework/types"
+import { OrderDTO, PaymentCollectionDTO, OrderLineItemDTO } from "@medusajs/framework/types"
 import InvoiceGeneratorService from "../../modules/invoice-generator/service"
 
 export type GenerateInvoicePdfStepInput = {
-  order: OrderDTO
+  order: OrderDTO & {
+    payment_collections: PaymentCollectionDTO;
+  };
   items: OrderLineItemDTO[]
   invoice_id: string
 }
@@ -23,10 +25,8 @@ export const generateInvoicePdfStep = createStep(
       items: input.items,
       invoice_id: input.invoice_id
     })
-
-    return new StepResponse({
-      pdf_buffer: pdfBuffer
-    }, previousInv)
+    
+    return new StepResponse({ pdf_buffer: pdfBuffer }, previousInv)
   },
   async (previousInv, { container }) => {
     if (!previousInv) {

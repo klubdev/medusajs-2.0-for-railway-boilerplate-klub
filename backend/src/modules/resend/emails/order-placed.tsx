@@ -154,7 +154,7 @@ function OrderPlacedEmailComponent({
       <Container className="px-2">
         <Hr className="border-black/20" />
       </Container>
-
+      
       {/* Order Infromation */}
       <Container className="px-2">
         <Row className="my-2">
@@ -245,6 +245,18 @@ function OrderPlacedEmailComponent({
               </Column>
             )}
         </Row>
+        {order.metadata?.customer_notes && (
+          <Row className="my-2">
+            <Column className="w-full">
+              <Text className="text-[#263A56] text-base font-semibold">
+                Order notes
+              </Text>
+              <Text className="text-[#263A56] text-base m-0">
+                {String(order?.metadata?.customer_notes ?? "")}
+              </Text>
+            </Column>
+          </Row>
+        )}
       </Container>
       {/* Order Items */}
       <Container className="px-2">
@@ -313,6 +325,9 @@ const mockOrder = {
     item_total: 10,
     item_tax_total: 0,
     customer_id: "cus_01JSNXD6VQC1YH56E4TGC81NWX",
+    metadata: {
+      customer_notes: "Cusomer notes fill it at checkout page...",
+    },
     items: [
       {
         id: "ordli_01JSNXDH9C47KZ43WQ3TBFXZA9",

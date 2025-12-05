@@ -1,5 +1,6 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { sendOrderConfirmationWorkflow } from "../../../../../workflows/send-order-confirmation"
+import { generateInvoicePdfWorkflow } from "../../../../../workflows/generate-invoice-pdf";
 import { MedusaError } from "@medusajs/framework/utils";
 
 export async function POST(
@@ -9,11 +10,16 @@ export async function POST(
     const { id } = req.params
 
     try {
-        // ✅ Correct usage with input
+        const { result: { pdf_buffer } } = await generateInvoicePdfWorkflow(req.scope).run({
+            input: { order_id: id }
+        })
+
+        const base64Content = Buffer.from(pdf_buffer).toString("base64")
         const result = await sendOrderConfirmationWorkflow(req.scope)
             .run({
                 input: {
-                    order_id: id
+                    order_id: id,
+                    pdfContent: base64Content
                 }
             })
 

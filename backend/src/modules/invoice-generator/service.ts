@@ -97,15 +97,13 @@ class InvoiceGeneratorService extends MedusaService({
     // Create table for order items
     const itemsTable = [
       [
-        { text: 'Item name', style: 'tableHeader' },
         { text: 'Variant Name', style: 'tableHeader' },
         { text: 'SKU', style: 'tableHeader' },
         { text: 'Quantity', style: 'tableHeader' },
         { text: 'Unit Price', style: 'tableHeader' },
         { text: 'Total', style: 'tableHeader' }
       ],
-      ...(await Promise.all(params.items.map(async item => [
-        { text: item.title || 'Unknown Name', style: 'tableRow' },
+      ...(await Promise.all(params.items?.map(async item => [
         { text: item.variant_title || 'Unknown name', style: 'tableRow' },
         { text: item.variant_sku || 'Unknown SKU', style: 'tableRow' },
         { text: item.quantity.toString(), style: 'tableRow' },
@@ -117,22 +115,22 @@ class InvoiceGeneratorService extends MedusaService({
         },
         {
           text: await this.formatAmount(
-            Number(item.total),
+            Number(item.original_total),
             params.order.currency_code
           ), style: 'tableRow'
         }
       ])))
     ]
 
-
-    const invoiceId = `#${invoice.display_id.toString()}`
-    const invoiceDate = new Date(invoice.updated_at).toLocaleDateString('en-GB', {
+    const payment = params.order?.payment_collections[0];
+    const invoiceId = `#${params.order.display_id.toString()}`
+    const invoiceDate = new Date(invoice.created_at).toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'long',
       year: 'numeric'
     })
 
-    const orderDate = new Date(invoice.created_at).toLocaleDateString('en-GB', {
+    const orderDate = new Date(params.order.created_at).toLocaleDateString('en-GB', {
       day: 'numeric',
       month: 'long',
       year: 'numeric'
@@ -284,7 +282,7 @@ class InvoiceGeneratorService extends MedusaService({
         {
           table: {
             headerRows: 1,
-            widths: ['*', '*', 'auto', 'auto', 'auto', 'auto'],
+            widths: ['*', 'auto', 'auto', 'auto', 'auto'],
             body: itemsTable
           },
           layout: {
@@ -333,7 +331,7 @@ class InvoiceGeneratorService extends MedusaService({
                     { text: 'Subtotal (excl. shipping):', style: 'totalLabel' },
                     {
                       text: await this.formatAmount(
-                        Number(params.order.original_item_total),
+                        Number(params.order?.original_item_total || 0),
                         params.order.currency_code),
                       style: 'totalValue'
                     }
@@ -342,7 +340,7 @@ class InvoiceGeneratorService extends MedusaService({
                     { text: 'Discount:', style: 'totalLabel' },
                     {
                       text: await this.formatAmount(
-                        Number(params.order.discount_total),
+                        Number(params.order?.discount_total || 0),
                         params.order.currency_code),
                       style: 'totalValue'
                     }
@@ -351,7 +349,7 @@ class InvoiceGeneratorService extends MedusaService({
                     { text: 'Shipping Costs:', style: 'totalLabel' },
                     {
                       text: await this.formatAmount(
-                        Number(params.order.shipping_total || 0),
+                        Number(params.order?.shipping_total || 0),
                         params.order.currency_code),
                       style: 'totalValue'
                     }
@@ -360,7 +358,7 @@ class InvoiceGeneratorService extends MedusaService({
                     { text: 'Taxes included in price:', style: 'totalLabel' },
                     {
                       text: await this.formatAmount(
-                        Number(params.order.tax_total),
+                        Number(params.order?.tax_total || 0),
                         params.order.currency_code),
                       style: 'totalValue'
                     }
@@ -369,7 +367,7 @@ class InvoiceGeneratorService extends MedusaService({
                     { text: 'Total:', style: 'totalLabel' },
                     {
                       text: await this.formatAmount(
-                        Number(params.order.total),
+                        Number(params.order?.total || 0),
                         params.order.currency_code),
                       style: 'totalValue'
                     }
@@ -411,6 +409,7 @@ class InvoiceGeneratorService extends MedusaService({
         {
           text: '\n'
         },
+        /** Payments */
         {
           columns: [
             {
@@ -428,22 +427,22 @@ class InvoiceGeneratorService extends MedusaService({
               margin: [0, 20, 0, 0],
               stack: [
                 {
-                  text: params.order.payment_collections?.status || 'no status',
+                  text: payment?.status || 'no status',
                   style: 'totalValue',
                   margin: [0, 0, 0, 4]
                 },
                 {
-                  text: params.order.payment_collections[0]?.payments?.[0]?.provider_id
+                  text: payment?.payments[0]?.provider_id
                     ? await this.getPaymentInfo(
-                      params.order.payment_collections[0].payments[0].provider_id
+                      payment?.payments[0]?.provider_id
                     )
                     : "default payment system",
                   style: 'totalValue',
                   margin: [0, 0, 0, 4]
                 },
                 {
-                  text: params.order?.payment_collections?.completed_at ?
-                    new Date(params.order?.payment_collections?.completed_at).toLocaleDateString('en-GB', {
+                  text: payment?.payments[0]?.created_at ?
+                    new Date(payment?.payments[0]?.created_at).toLocaleDateString('en-GB', {
                       day: 'numeric',
                       month: 'long',
                       year: 'numeric'
@@ -453,8 +452,8 @@ class InvoiceGeneratorService extends MedusaService({
                 },
                 {
                   text: await this.formatAmount(
-                    Number(params.order?.payment_collections?.amount || 0),
-                    params.order.currency_code),
+                    Number(payment?.payments[0]?.amount || 0),
+                    payment?.payments[0]?.currency_code),
                   style: 'totalValue',
                   margin: [0, 0, 0, 4]
                 }
@@ -569,6 +568,12 @@ class InvoiceGeneratorService extends MedusaService({
           color: '#2B2E43',
           italics: false,
           lineHeight: 1.2
+        },
+        smallText: {
+          fontSize: 5,
+          color: '#2B2E43',
+          italics: false,
+          lineHeight: 1
         },
         thankYouText: {
           fontSize: 12,

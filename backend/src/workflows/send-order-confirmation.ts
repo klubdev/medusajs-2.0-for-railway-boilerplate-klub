@@ -1,10 +1,11 @@
-import { createWorkflow, when, WorkflowResponse } from "@medusajs/framework/workflows-sdk";
+import { createWorkflow, when, transform, WorkflowResponse } from "@medusajs/framework/workflows-sdk";
 import { useQueryGraphStep } from "@medusajs/medusa/core-flows";
 import { sendNotificationStep } from "./steps/send-notification";
 import { MEDUSA_STOREFRONT_URL } from '../lib/constants'
 
 type WorkflowInput = {
   order_id: string
+  pdfContent: string
 }
 
 export const sendOrderConfirmationWorkflow = createWorkflow(
@@ -19,11 +20,13 @@ export const sendOrderConfirmationWorkflow = createWorkflow(
         "currency_code",
         "total",
         "items.*",
+        "metadata",
         "shipping_address.*",
         "billing_address.*",
         "shipping_methods.*",
-        "payment_collections",
-        "payment_collections.payments",
+        "payment_collections.*",
+        "payment_collections.payments.*",
+        "payment_collections.payment_providers.*",
         "customer.*",
         "total",
         "subtotal",
@@ -33,6 +36,8 @@ export const sendOrderConfirmationWorkflow = createWorkflow(
         "item_subtotal",
         "item_total",
         "item_tax_total",
+        "gift_card_total",
+        "original_item_total",
       ],
       filters: {
         id: input.order_id
@@ -42,28 +47,44 @@ export const sendOrderConfirmationWorkflow = createWorkflow(
       }
     })
 
+    const filename = transform({ orders }, ({ orders }) => `invoice-${orders[0].display_id}.pdf`)
+    const pdfContent = transform({ input }, ({ input }) => input.pdfContent)
+
+    const attachments = pdfContent ? [
+      {
+        content: pdfContent,
+        filename: filename,
+        content_type: "application/pdf",
+        disposition: "attachment"
+      }
+    ] : []
+
     const notification = when({ orders }, (data) => !!data.orders[0].email)
       .then(() => {
-        console.log()
-        return sendNotificationStep([{
-          to: orders[0].email!,
-          channel: "email",
-          template: "order-placed",
-          data: {
-            order: orders[0],
-            storefrontUrl: MEDUSA_STOREFRONT_URL
-          }
-        },
-        {
-          to: "kristel@bonbeaujoli.com",
-          channel: "email",
-          template: "order-placed",
-          data: {
-            order: orders[0],
-            storefrontUrl: MEDUSA_STOREFRONT_URL,
+        return sendNotificationStep([
+          {
+            to: orders[0].email!,
+            channel: "email",
+            template: "order-placed",
+            data: {
+              order: orders[0],
+              storefrontUrl: MEDUSA_STOREFRONT_URL
+            },
+            attachments
           },
-        }])
+          {
+            to: "kristel@bonbeaujoli.com",
+            channel: "email",
+            template: "order-placed",
+            data: {
+              order: orders[0],
+              storefrontUrl: MEDUSA_STOREFRONT_URL,
+            },
+            attachments
+          }
+        ])
       })
+
 
     return new WorkflowResponse({
       notification

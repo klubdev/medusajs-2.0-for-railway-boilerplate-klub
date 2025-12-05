@@ -36,10 +36,10 @@ export const OrderLineItem: React.FC<OrderLineItemProps> = ({
   };
   return (
     <Row className={`text-[#263A56] ${bolder ? "font-semibold mt-4" : ""}`}>
-      <Column className="w-1/2">
+      <Column className="w-2/3">
         <Text className="m-0">{label}</Text>
       </Column>
-      <Column className="w-1/2 text-right">
+      <Column className="w-1/3 text-right">
         <Text className="m-0">
           {prefix}
           {formatPrice(amount || 0)}
