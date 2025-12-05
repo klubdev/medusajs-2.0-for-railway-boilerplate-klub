@@ -115,8 +115,10 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       return {}
     }
 
+    const displayId = (notification.data as { order?: { display_id?: string }} )?.order?.display_id;
+
     const subject = notification.template == Templates.ORDER_PLACED ?
-      `Order #${notification.data?.order?.display_id as string} Confirmation | Bon Beau Joli` :
+      `Order #${displayId} Confirmation | Bon Beau Joli` :
       this.getTemplateSubject(notification.template as Templates)
 
     const commonOptions = {
