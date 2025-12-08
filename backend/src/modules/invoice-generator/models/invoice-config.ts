@@ -7,5 +7,7 @@ export const InvoiceConfig = model.define("invoice_config", {
   company_phone: model.text(),
   company_email: model.text(),
   company_logo: model.text().nullable(),
+  company_kvk: model.text().nullable(),
+  company_vat: model.text().nullable(),
   notes: model.text().nullable(),
 })
