@@ -96,7 +96,20 @@ const Quotes = () => {
           <DataTable.Toolbar>
             <Heading>Products</Heading>
           </DataTable.Toolbar>
-          <DataTable.Table />
+          {!isPending && (quotes?.length ?? 0) === 0 ? (
+            <div class="flex min-h-[250px] w-full flex-1 flex-col items-center justify-center border-y px-6 py-4">
+              <div class="flex size-full flex-col items-center justify-center gap-2">
+                <p class="font-medium font-sans txt-medium">
+                  No product quotes found
+                </p>
+                <p class="font-normal font-sans txt-medium">
+                  Create a new product quote to get started.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <DataTable.Table />
+          )}
           <DataTable.Pagination />
         </DataTable>
       </Container>
