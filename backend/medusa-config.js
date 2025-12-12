@@ -230,6 +230,10 @@ const medusaConfig = {
       options: {}
     },
     {
+      resolve: "@medusajs/loyalty-plugin",
+      options: {}
+    },
+    {
       resolve: "@alpha-solutions/medusa-image-alt",
       options: {},
     },

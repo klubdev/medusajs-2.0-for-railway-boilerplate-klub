@@ -35,6 +35,7 @@
     "@medusajs/framework": "2.10.3",
     "@medusajs/icons": "2.10.3",
     "@medusajs/js-sdk": "2.10.3",
+    "@medusajs/loyalty-plugin": "0.0.8-preview.2.11.0",
     "@medusajs/medusa": "2.10.3",
     "@medusajs/notification-sendgrid": "2.10.3",
     "@medusajs/payment-stripe": "2.10.3",
