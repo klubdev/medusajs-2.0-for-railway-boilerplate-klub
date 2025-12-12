@@ -1,7 +1,6 @@
 import { MedusaService } from "@medusajs/framework/utils"
 import { InvoiceConfig } from "./models/invoice-config";
 import { Invoice } from "./models/invoice";
-// @ts-ignore - pdfmake doesn't have type definitions
 import PdfPrinter from "pdfmake"
 import { InferTypeOf, OrderDTO, OrderLineItemDTO, PaymentCollectionDTO } from "@medusajs/framework/types"
 
@@ -48,8 +47,6 @@ export interface InvoiceConfig {
   company_address: string
   company_phone: string
   company_email: string
-  company_kvk?: string
-  company_vat?: string
   notes?: string
 }
 
@@ -62,8 +59,10 @@ class InvoiceGeneratorService extends MedusaService({
   }): Promise<Buffer> {
     const invoice = await this.retrieveInvoice(params.invoice_id)
 
-    // Always regenerate content to ensure latest layout is used
-    const pdfContent = await this.createInvoiceContent(params, invoice)
+    // Generate new content
+    const pdfContent = Object.keys(invoice.pdfContent).length ?
+      invoice.pdfContent :
+      await this.createInvoiceContent(params, invoice)
 
     await this.updateInvoices({
       id: invoice.id,
@@ -87,18 +86,6 @@ class InvoiceGeneratorService extends MedusaService({
     });
   }
 
-  private formatDate(date: Date | string): string {
-    const d = typeof date === 'string' ? new Date(date) : date
-    const months = [
-      'januari', 'februari', 'maart', 'april', 'mei', 'juni',
-      'juli', 'augustus', 'september', 'oktober', 'november', 'december'
-    ]
-    const day = d.getDate()
-    const month = months[d.getMonth()]
-    const year = d.getFullYear()
-    return `${day} ${month} ${year}`
-  }
-
   private async createInvoiceContent(
     params: GeneratePdfParams,
     invoice: InferTypeOf<typeof Invoice>
@@ -107,12 +94,7 @@ class InvoiceGeneratorService extends MedusaService({
     const invoiceConfigs = await this.listInvoiceConfigs()
     const config: Partial<InvoiceConfig> = invoiceConfigs[0] || {}
 
-    // Format invoice number as #80 instead of INV-000065
-    const invoiceId = `#${invoice.display_id}`
-    const invoiceDate = this.formatDate(invoice.created_at)
-    const orderDate = this.formatDate(params.order.created_at)
-
-    // Create table for order items with SKU and Description
+    // Create table for order items
     const itemsTable = [
       [
         { text: 'Variant Name', style: 'tableHeader' },
@@ -161,7 +143,7 @@ class InvoiceGeneratorService extends MedusaService({
       header: {
         margin: [20, 20, 30, 20],
         columns: [
-          /** Company Logo and Name */
+          /** Company Logo */
           {
             width: '*',
             stack: [
@@ -176,7 +158,7 @@ class InvoiceGeneratorService extends MedusaService({
               ] : [])
             ]
           },
-          /** Invoice Title and Number */
+          /** Invoice Title */
           {
             width: 'auto',
             stack: [
@@ -190,7 +172,6 @@ class InvoiceGeneratorService extends MedusaService({
         ]
       },
       content: [
-        /** Company Details */
         {
           margin: [0, 20, 0, 0],
           columns: [
@@ -263,7 +244,12 @@ class InvoiceGeneratorService extends MedusaService({
                   margin: [0, 20, 0, 8]
                 },
                 {
-                  text: billingText,
+                  text: params.order.billing_address ?
+                    `${params.order.billing_address.first_name || ''} ${params.order.billing_address.last_name || ''}
+                    ${params.order.billing_address.address_1 || ''}${params.order.billing_address.address_2 ? `\n${params.order.billing_address.address_2}` : ''}
+                    ${params.order.billing_address.city || ''}, ${params.order.billing_address.province || ''} ${params.order.billing_address.postal_code || ''}
+                    ${params.order.billing_address.country_code || ''}${params.order.billing_address.phone ? `\n${params.order.billing_address.phone}` : ''}` :
+                    'No billing address provided',
                   style: 'addressText'
                 }
               ]
@@ -277,7 +263,12 @@ class InvoiceGeneratorService extends MedusaService({
                   margin: [0, 20, 0, 8]
                 },
                 {
-                  text: shippingText,
+                  text: params.order.shipping_address ?
+                    `${params.order.shipping_address.first_name || ''} ${params.order.shipping_address.last_name || ''}
+                    ${params.order.shipping_address.address_1 || ''} ${params.order.shipping_address.address_2 ? `\n${params.order.shipping_address.address_2}` : ''}
+                    ${params.order.shipping_address.city || ''}, ${params.order.shipping_address.province || ''} ${params.order.shipping_address.postal_code || ''}
+                    ${params.order.shipping_address.country_code || ''}${params.order.shipping_address.phone ? `\n${params.order.shipping_address.phone}` : ''}` :
+                    'No shipping address provided',
                   style: 'addressText'
                 }
               ]
@@ -302,7 +293,7 @@ class InvoiceGeneratorService extends MedusaService({
               return (i === 0 || i === node.table.body.length) ? 0.5 : 0.3;
             },
             vLineWidth: function (i: number, node: any) {
-              return 0.5;
+              return 0.3;
             },
             hLineColor: function (i: number, node: any) {
               return (i === 0 || i === node.table.body.length) ? '#e5e7eb' : '#e5e7eb';
@@ -380,28 +371,18 @@ class InvoiceGeneratorService extends MedusaService({
                         params.order.currency_code),
                       style: 'totalValue'
                     }
-                  ],
-                  [
-                    { text: 'Total:', style: 'totalLabelBold' },
-                    {
-                      text: await this.formatAmount(
-                        Number(params.order?.total || 0),
-                        params.order.currency_code),
-                      style: 'totalValueBold'
-                    }
                   ]
                 ]
               },
               layout: {
                 fillColor: function (rowIndex: number) {
                   return null;
-                  return null;
                 },
                 hLineWidth: function (i: number, node: any) {
                   return (i === 0 || i === node.table.body.length) ? 0.5 : 0.3;
                 },
                 vLineWidth: function () {
-                  return 0.1;
+                  return 0.3;
                 },
                 hLineColor: function (i: number, node: any) {
                   return (i === 0 || i === node.table.body.length) ? '#e5e7eb' : '#e5e7eb';
@@ -524,27 +505,9 @@ class InvoiceGeneratorService extends MedusaService({
           bold: true,
           color: '#2B2E43',
           lineHeight: 1.3
-=======
-          fontSize: 18,
-          font: 'Times',
-          bold: true,
-          color: '#000000',
-          margin: [0, 0, 0, 5]
         },
-        companyAddress: {
-          fontSize: 10,
-          color: '#000000',
-          lineHeight: 1.4
-        },
-        companyContact: {
-          fontSize: 11,
-          bold: true,
-          color: '#2B2E43',
-          lineHeight: 1.3
-        },
-        invoiceNumber: {
-          fontSize: 14,
-          font: 'Times',
+        invoiceTitle: {
+          fontSize: 24,
           bold: true,
           color: '#2B2E43'
         },
@@ -559,8 +522,7 @@ class InvoiceGeneratorService extends MedusaService({
           color: '#2B2E43'
         },
         sectionHeader: {
-          fontSize: 11,
-          font: 'Times',
+          fontSize: 12,
           bold: true,
           color: '#2B2E43',
           backgroundColor: '#e5e7eb',
@@ -573,7 +535,6 @@ class InvoiceGeneratorService extends MedusaService({
         },
         tableHeader: {
           fontSize: 10,
-          font: 'Times',
           bold: true,
           color: '#2B2E43',
           fillColor: '#e5e7eb'
@@ -604,7 +565,6 @@ class InvoiceGeneratorService extends MedusaService({
         },
         notesText: {
           fontSize: 10,
-          color: '#000000'
           color: '#2B2E43',
           italics: false,
           lineHeight: 1.2
@@ -619,16 +579,6 @@ class InvoiceGeneratorService extends MedusaService({
           fontSize: 12,
           color: '#2B2E43',
           italics: true
-        },
-        footerText: {
-          fontSize: 9,
-          color: '#000000'
-        },
-        invoiceTitle: {
-          fontSize: 24,
-          font: 'Times',
-          bold: true,
-          color: '#000000'
         }
       },
       defaultStyle: {
@@ -638,11 +588,6 @@ class InvoiceGeneratorService extends MedusaService({
   }
 
   private async formatAmount(amount: number, currency: string): Promise<string> {
-    // Format as EUR with space and comma decimal separator (e.g., "€ 34,90")
-    if (currency === 'EUR' || currency === 'eur') {
-      return `€ ${amount.toFixed(2).replace('.', ',')}`
-    }
-    // Fallback to standard formatting for other currencies
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency,
