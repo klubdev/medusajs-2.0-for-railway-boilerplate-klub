@@ -284,10 +284,10 @@ function OrderPlacedEmailComponent({
                 <Text className="text-[#263A56] my-1">
                   {item.variant_title}
                 </Text>
-                <Text className="text-[#263A56] my-1 text-base">
+                {/* <Text className="text-[#263A56] my-1 text-base">
                   {item.quantity}
                   {" x "} {formatPrice(item.total)}
-                </Text>
+                </Text> */}
               </Column>
             </Row>
           </Section>
