@@ -6,20 +6,28 @@ export async function GET(
     res: MedusaResponse
 ) {
     const { id } = req.params;
-
-    const fields = req.query.fields?.split(",") ?? [
-        'id',
-        'status',
-        'value',
-        'code',
-        'currency_code',
-        'expires_at',
-        'reference_id',
-        'reference',
-        'line_item_id',
-        'note',
-        'metadata'
+    
+    let fields: string[] = [
+        "id",
+        "code",
+        "value",
+        "currency_code",
+        "line_item_id",
+        "note",
+        "metadata",
+        "expires_at",
+        "status",
+        "reference_id",
+        "reference"
     ];
+
+    const queryFields = req.query.fields;
+
+    if (typeof queryFields === "string") {
+        fields = queryFields.split(",");
+    } else if (Array.isArray(queryFields)) {
+        fields = queryFields.map(f => f.toString());
+    }
 
     if (!id) {
         throw new MedusaError(
