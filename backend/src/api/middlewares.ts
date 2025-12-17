@@ -11,6 +11,9 @@ import { listStoreQuoteQueryConfig } from "./store/customers/me/quotes/query-con
 import { PostInvoiceConfgSchema } from "./admin/invoice-config/route"
 import { PostStoreCreateWishlistItem } from "./store/customers/me/wishlists/items/validators"
 
+import { retrieveGiftCardTransformQueryConfig } from "./store/gift-cards/query-config"
+import { StoreGetGiftCardParams } from "./store/gift-cards/validators"
+
 
 import { z } from "zod";
 
@@ -116,6 +119,13 @@ export default defineMiddlewares({
       method: "POST",
       middlewares: [
         validateAndTransformBody(PostStoreCreateWishlistItem),
+      ],
+    },
+    {
+      matcher: "/gift-cards/order/items/item/:id",
+      method: "GET",
+      middlewares: [
+        validateAndTransformQuery(StoreGetGiftCardParams, retrieveGiftCardTransformQueryConfig),
       ],
     },
   ]
