@@ -19,7 +19,7 @@ export async function GET(
         entity: "gift_cards",
         fields: req.queryConfig.fields,
         filters: {
-            line_item_id: id
+            reference_id: id
         },
     }, {
         throwIfKeyNotFound: false
@@ -28,7 +28,7 @@ export async function GET(
     if (!gift_card) {
         throw new MedusaError(
             MedusaError.Types.NOT_FOUND,
-            `No gift card found by order item id ${id}`
+            `No gift cards found by order id ${id}`
         )
     }
 
