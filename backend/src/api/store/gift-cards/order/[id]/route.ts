@@ -15,7 +15,7 @@ export async function GET(
     }
 
     const query = req.scope.resolve("query")
-    const { data: [gift_card], } = await query.graph({
+    const { data: gift_cards, } = await query.graph({
         entity: "gift_cards",
         fields: req.queryConfig.fields,
         filters: {
@@ -25,12 +25,12 @@ export async function GET(
         throwIfKeyNotFound: false
     });
 
-    if (!gift_card) {
+    if (!gift_cards) {
         throw new MedusaError(
             MedusaError.Types.NOT_FOUND,
             `No gift cards found by order id ${id}`
         )
     }
 
-    res.json({ gift_card });
+    res.json({ gift_cards });
 }
