@@ -10,7 +10,7 @@ export async function GET(
     if (!id) {
         throw new MedusaError(
             MedusaError.Types.INVALID_ARGUMENT,
-            "ID is required."
+            "Order is required."
         )
     }
 
@@ -22,7 +22,7 @@ export async function GET(
             line_item_id: id
         },
     }, {
-        throwIfKeyNotFound: true
+        throwIfKeyNotFound: false
     });
 
     if (!gift_card) {

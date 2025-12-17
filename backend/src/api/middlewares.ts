@@ -122,7 +122,7 @@ export default defineMiddlewares({
       ],
     },
     {
-      matcher: "/gift-cards/order/items/item/:id",
+      matcher: "/store/gift-cards/order/:id",
       method: "GET",
       middlewares: [
         validateAndTransformQuery(StoreGetGiftCardParams, retrieveGiftCardTransformQueryConfig),
