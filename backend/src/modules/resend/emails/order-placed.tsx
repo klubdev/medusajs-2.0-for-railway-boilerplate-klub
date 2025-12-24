@@ -296,7 +296,7 @@ function OrderPlacedEmailComponent({
               {order?.gift_cards?.map((gc) => (
                 <Text
                   key={gc.id}
-                  className="text-[#263A56] text-base m-0 bg-green-300 rounded-md text-action-900 uppercase tracking-wider text-sm py-1 px-2"
+                  className="text-[#263A56] text-base m-0 bg-green-300 rounded-md text-action-900 uppercase tracking-wider text-sm text-center py-1 px-2"
                 >
                   {gc.code}
                 </Text>
