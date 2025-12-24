@@ -45,6 +45,7 @@ type OrderPlacedEmailProps = {
   order: OrderDTO & {
     customer: CustomerDTO;
     payment_collections: PaymentCollectionDTO;
+    gift_cards?: GiftCardDTO[];
     gift_cards_line_items?: GiftCardDTO[];
   };
   preview?: string;
