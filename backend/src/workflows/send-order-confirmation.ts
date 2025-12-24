@@ -118,16 +118,16 @@ export const sendOrderConfirmationWorkflow = createWorkflow(
             },
             attachments
           },
-          // {
-          //   to: "kristel@bonbeaujoli.com",
-          //   channel: "email",
-          //   template: "order-placed",
-          //   data: {
-          //     order: orders[0],
-          //     storefrontUrl: MEDUSA_STOREFRONT_URL,
-          //   },
-          //   attachments
-          // }
+          {
+            to: "kristel@bonbeaujoli.com",
+            channel: "email",
+            template: "order-placed",
+            data: {
+              order: orders[0],
+              storefrontUrl: MEDUSA_STOREFRONT_URL,
+            },
+            attachments
+          }
         ])
       })
 
