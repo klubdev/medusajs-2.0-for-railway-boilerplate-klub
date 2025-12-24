@@ -15,14 +15,12 @@ export const generateInvoicePdfWorkflow = createWorkflow(
       fields: [
         "id",
         "display_id",
-        "created_at",
-        "updated_at",
         "email",
         "currency_code",
-        "metadata",
+        "total",
         "items.*",
-        "items.variant.*",
-        "items.variant.product.*",
+        "gift_cards.*",
+        "metadata",
         "shipping_address.*",
         "billing_address.*",
         "shipping_methods.*",
@@ -39,15 +37,33 @@ export const generateInvoicePdfWorkflow = createWorkflow(
         "item_total",
         "item_tax_total",
         "gift_card_total",
+        "credit_line_subtotal",
+        "credit_line_tax_total",
+        "credit_line_total",
         "original_item_total",
       ],
-      filters: {
-        id: input.order_id
-      },
-      options: {
-        throwIfKeyNotFound: true
-      }
-    })
+      filters: { id: input.order_id },
+      options: { throwIfKeyNotFound: true },
+    }).config({ name: "query-order" })
+
+    const { data: gift_cards } = useQueryGraphStep({
+      entity: "gift_cards",
+      fields: [
+        "id",
+        "status",
+        "value",
+        "code",
+        "currency_code",
+        "expires_at",
+        "reference_id",
+        "reference",
+        "line_item_id",
+        "note",
+        "metadata",
+      ],
+      filters: { reference_id: input.order_id },
+      options: { throwIfKeyNotFound: false },
+    }).config({ name: "query-gift-cards" })
 
     const countryFilters = transform({ orders }, (data) => {
       const country_codes: string[] = []
@@ -63,41 +79,54 @@ export const generateInvoicePdfWorkflow = createWorkflow(
     const { data: countries } = useQueryGraphStep({
       entity: "country",
       fields: ["display_name", "iso_2"],
-      filters: {
-        iso_2: countryFilters
-      }
+      filters: { iso_2: countryFilters },
     }).config({ name: "retrieve-countries" })
+
 
     const transformedOrder = transform({ orders, countries }, (data) => {
       const order = data.orders[0]
 
       if (order.billing_address?.country_code) {
-        order.billing_address.country_code = data.countries.find(
-          (country) => country.iso_2 === order.billing_address!.country_code
-        )?.display_name || order.billing_address!.country_code
+        order.billing_address.country_code =
+          data.countries.find((c) => c.iso_2 === order.billing_address!.country_code)
+            ?.display_name || order.billing_address!.country_code
       }
 
       if (order.shipping_address?.country_code) {
-        order.shipping_address.country_code = data.countries.find(
-          (country) => country.iso_2 === order.shipping_address!.country_code
-        )?.display_name || order.shipping_address!.country_code
+        order.shipping_address.country_code =
+          data.countries.find((c) => c.iso_2 === order.shipping_address!.country_code)
+            ?.display_name || order.shipping_address!.country_code
       }
 
       return order
     })
 
+
+    const orderWithGiftCards = transform(
+      { transformedOrder, gift_cards },
+      ({ transformedOrder, gift_cards }) => {
+        const hasGiftCardItems = transformedOrder.items?.some(
+          (item: any) => item.is_giftcard === true
+        )
+
+        return {
+          ...transformedOrder,
+          gift_cards_line_items: hasGiftCardItems ? gift_cards ?? [] : [],
+        }
+      }
+    )
+
+    // Use the enriched order everywhere below
     const invoice = getOrderInvoiceStep({
-      order_id: transformedOrder.id
+      order_id: orderWithGiftCards.id,
     })
 
     const { pdf_buffer } = generateInvoicePdfStep({
-      order: transformedOrder,
-      items: transformedOrder.items,
-      invoice_id: invoice.id
+      order: orderWithGiftCards,
+      items: orderWithGiftCards.items,
+      invoice_id: invoice.id,
     } as unknown as GenerateInvoicePdfStepInput)
-    
-    return new WorkflowResponse({
-      pdf_buffer
-    })
+
+    return new WorkflowResponse({ pdf_buffer })
   }
-) 
+)

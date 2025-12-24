@@ -1,4 +1,5 @@
-import { defineMiddlewares, validateAndTransformBody, validateAndTransformQuery } from "@medusajs/framework/http";
+import { defineMiddlewares, validateAndTransformBody, validateAndTransformQuery, authenticate, applyDefaultFilters } from "@medusajs/framework/http";
+import { ProductStatus } from "@medusajs/framework/utils"
 import { PostBundledProductsSchema } from "./admin/bundled-products/route";
 import { createFindParams } from "@medusajs/medusa/api/utils/validators";
 import { PostCartsBundledLineItemsSchema } from "./store/carts/[id]/line-item-bundles/route";
@@ -14,6 +15,8 @@ import { PostStoreCreateWishlistItem } from "./store/customers/me/wishlists/item
 import { retrieveGiftCardTransformQueryConfig } from "./store/gift-cards/query-config"
 import { StoreGetGiftCardParams } from "./store/gift-cards/validators"
 
+import { listProductQueryConfig } from "./store/products-custom-list/filtered/query-config"
+import { StoreGetProductsParams } from "./store/products-custom-list/filtered/validators"
 
 import { z } from "zod";
 
@@ -126,6 +129,19 @@ export default defineMiddlewares({
       method: "GET",
       middlewares: [
         validateAndTransformQuery(StoreGetGiftCardParams, retrieveGiftCardTransformQueryConfig),
+      ],
+    },
+    {
+      matcher: "/store/products-custom-list/filtered",
+      method: "GET",
+      middlewares: [
+        authenticate("customer", ["session", "bearer"], {
+          allowUnauthenticated: true,
+        }),
+        validateAndTransformQuery(StoreGetProductsParams, listProductQueryConfig),
+        applyDefaultFilters({
+          status: ProductStatus.PUBLISHED,
+        }),
       ],
     },
   ]

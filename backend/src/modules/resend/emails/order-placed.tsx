@@ -20,10 +20,32 @@ import {
   PaymentCollectionDTO,
 } from "@medusajs/framework/types";
 
+type GiftCardDTO = {
+  id: string;
+  status: "pending" | "redeemed" | string;
+  code: string;
+  currency_code: string;
+  expires_at: string | null;
+  reference_id: string;
+  reference: string;
+  line_item_id: string;
+  note: string | null;
+  metadata: Record<string, unknown>;
+  raw_value: {
+    value: string;
+    precision: number;
+  };
+  created_at: string; // ISO date string
+  updated_at: string; // ISO date string
+  deleted_at: string | null;
+  value: number;
+};
+
 type OrderPlacedEmailProps = {
   order: OrderDTO & {
     customer: CustomerDTO;
     payment_collections: PaymentCollectionDTO;
+    gift_cards_line_items?: GiftCardDTO[];
   };
   preview?: string;
   storefrontUrl?: string;
@@ -65,6 +87,8 @@ function OrderPlacedEmailComponent({
     return items[type] || "Default";
   };
 
+  const paidByGiftcard = (order?.gift_cards?.length ?? 0) > 0;
+
   return (
     <Base preview={preview}>
       {/* Thank You Message */}
@@ -94,15 +118,32 @@ function OrderPlacedEmailComponent({
           <Heading className="font-times text-lg font-semibold tracking-wide text-[#263A56] mb-4">
             Order Summary
           </Heading>
-          {order.items?.map((item) => (
-            <OrderLineItem
-              key={item.id}
-              label={item.variant_title}
-              amount={item.unit_price}
-              prefix={`${item.quantity} x `}
-              currency_code={order.currency_code}
-            />
-          ))}
+          {/* Non-gift cards */}
+          {order.items
+            ?.filter((item) => !item.is_giftcard)
+            .map((item) => (
+              <OrderLineItem
+                key={item.id}
+                label={item.variant_title}
+                amount={item.unit_price}
+                prefix={`${item.quantity} x `}
+                currency_code={order.currency_code}
+              />
+            ))}
+
+          {/* Gift cards */}
+          {order.items
+            ?.filter((item) => item.is_giftcard)
+            .map((item) => (
+              <OrderLineItem
+                key={item.id}
+                label={item.product_title}
+                amount={item.unit_price}
+                prefix={`${item.quantity} x `}
+                currency_code={order.currency_code}
+              />
+            ))}
+
           <Hr className="border-black/20" />
 
           <OrderLineItem
@@ -132,14 +173,14 @@ function OrderPlacedEmailComponent({
               currency_code={order.currency_code}
             />
           )}
-          {order.gift_card_total != 0 ||
-            (order.gift_card_total > 0 && (
-              <OrderLineItem
-                label="Gift card"
-                amount={order.gift_card_total}
-                currency_code={order.currency_code}
-              />
-            ))}
+          {order.credit_line_total != 0 && (
+            <OrderLineItem
+              label="Gift card"
+              prefix="-"
+              amount={order.credit_line_total}
+              currency_code={order.currency_code}
+            />
+          )}
 
           <Hr className="border-black/20" />
 
@@ -154,7 +195,7 @@ function OrderPlacedEmailComponent({
       <Container className="px-2">
         <Hr className="border-black/20" />
       </Container>
-      
+
       {/* Order Infromation */}
       <Container className="px-2">
         <Row className="my-2">
@@ -244,6 +285,23 @@ function OrderPlacedEmailComponent({
                 </Text>
               </Column>
             )}
+
+          {paidByGiftcard && (
+            <Column className="w-1/2">
+              <Text className="text-[#263A56] text-base font-semibold">
+                Gift card(s) <br />
+              </Text>
+
+              {order?.gift_cards?.map((gc) => (
+                <Text
+                  key={gc.id}
+                  className="text-[#263A56] text-base m-0 bg-green-300 rounded-md text-action-900 uppercase tracking-wider text-sm py-1 px-2"
+                >
+                  {gc.code}
+                </Text>
+              ))}
+            </Column>
+          )}
         </Row>
         {order.metadata?.customer_notes && (
           <Row className="my-2">
@@ -266,32 +324,53 @@ function OrderPlacedEmailComponent({
         <Heading className="font-times text-lg font-semibold tracking-wide text-[#263A56] mb-4">
           Your Items
         </Heading>
-        {order.items?.map((item) => (
-          <Section key={item.id} className="border-b border-black/20 pb-2">
-            <Row>
-              <Column className="w-1/3">
-                <Img
-                  src={item.thumbnail ?? ""}
-                  alt={item.product_title ?? ""}
-                  className="rounded-sm"
-                  width="100%"
-                />
-              </Column>
-              <Column className="w-2/3 pl-4">
-                <Text className="text-lg font-semibold text-[#263A56] my-1">
-                  {item.product_title}
-                </Text>
-                <Text className="text-[#263A56] my-1">
-                  {item.variant_title}
-                </Text>
-                {/* <Text className="text-[#263A56] my-1 text-base">
-                  {item.quantity}
-                  {" x "} {formatPrice(item.total)}
-                </Text> */}
-              </Column>
-            </Row>
-          </Section>
-        ))}
+        {order.items?.map((item) => {
+          const giftCard =
+            order?.gift_cards_line_items?.filter(
+              (gc) => gc.line_item_id === item.id
+            ) ?? [];
+
+          return (
+            <Section key={item.id} className="border-b border-black/20 pb-2">
+              <Row>
+                <Column className="w-1/3 aspect-square overflow-hidden">
+                  <Img
+                    src={item.thumbnail ?? ""}
+                    alt={item.product_title ?? ""}
+                    className="rounded-sm w-full object-cover"
+                  />
+                </Column>
+
+                <Column className="w-2/3 pl-4">
+                  <Text className="text-lg font-semibold text-[#263A56] my-1">
+                    {item.product_title}
+                  </Text>
+
+                  <Text className="text-[#263A56] my-1">
+                    {item.is_giftcard
+                      ? `Denomination ${item.variant_title}`
+                      : item.variant_title}
+                  </Text>
+
+                  {item.is_giftcard && giftCard.length && (
+                    <Text className="text-[#263A56] my-1">
+                      Card Code: {giftCard[0]?.code}
+                    </Text>
+                  )}
+
+                  {item.is_giftcard &&
+                    giftCard.length > 0 &&
+                    giftCard[0]?.expires_at && (
+                      <Text className="text-[#263A56] my-1">
+                        Expires at: {giftCard[0].expires_at}
+                      </Text>
+                    )}
+                </Column>
+              </Row>
+            </Section>
+          );
+        })}
+
         <Section className="px-2 py-10 w-full text-center">
           <Link
             className="w-1/3 bg-[#263A56] text-[#FCF9F3] text-base font-normal no-underline text-center px-5 py-3"
