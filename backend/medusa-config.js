@@ -186,6 +186,9 @@ const medusaConfig = {
     {
       resolve: "./src/modules/wishlist",
     },
+    {
+      resolve: "./src/modules/product-custom-list",
+    },
   ],
   plugins: [
     ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
@@ -199,26 +202,24 @@ const medusaConfig = {
           products: {
             type: 'products',
             enabled: true,
-            fields: ['id', 'title', 'description', 'handle', 'variant_sku', 'thumbnail', 'images', 'variants', 'metadata'],
+            fields: ['id', 'title', 'description', 'handle', 'variant_sku', 'thumbnail', 'metadata'],
             indexSettings: {
               searchableAttributes: [
-                'title', 
-                'description', 
+                'title',
+                'description',
                 'variant_sku'
               ],
-              displayedAttributes:  [
-                'id', 
-                'handle', 
-                'title', 
-                'description', 
-                'variant_sku', 
+              displayedAttributes: [
+                'id',
+                'handle',
+                'title',
+                'description',
+                'variant_sku',
                 'thumbnail',
-                'images',
-                'variants',
                 'metadata'
               ],
               filterableAttributes: [
-                'id', 
+                'id',
                 'handle'
               ],
             },
