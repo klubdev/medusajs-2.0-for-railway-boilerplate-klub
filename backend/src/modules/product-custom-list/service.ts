@@ -185,35 +185,20 @@ export default class ProductCustomListService extends AbstractFileProviderServic
         optionByTitle: Record<string, string | string[]>
     ): Promise<{ option_id: string; value: string }[]> {
         const titles = Object.keys(optionByTitle).filter(Boolean)
-        if (!titles.length) return []
+        const values = Object.values(optionByTitle).filter(Boolean).flat(1)
+
+        
+        if (!titles.length || !values.length) return []
 
         // fetch option ids by title
-        const rows = await this.pgConnection("product_option")
-            .select(["id", "title"])
+        const rows = await this.pgConnection("product_option as po")
+            .leftJoin("product_option_value as pov", "pov.option_id", "po.id")
+            .distinct(["po.id as option_id", "pov.value"])
             .whereIn("title", titles)
+            .whereIn('pov.value', values)
+            .whereNull("po.deleted_at")
+            .whereNotNull("pov.value");
 
-        const byTitle = new Map<string, string>()
-        for (const r of rows as any[]) {
-            if (r?.title && r?.id) byTitle.set(r.title, r.id)
-        }
-
-        const out: { option_id: string; value: string }[] = []
-
-        for (const [title, value] of Object.entries(optionByTitle)) {
-            const option_id = byTitle.get(title)
-            if (!option_id) continue
-
-            if (Array.isArray(value)) {
-                for (const v of value) {
-                    const s = String(v).trim()
-                    if (s) out.push({ option_id, value: s })
-                }
-            } else {
-                const s = String(value).trim()
-                if (s) out.push({ option_id, value: s })
-            }
-        }
-
-        return out
+        return rows;
     }
 }

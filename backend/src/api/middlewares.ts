@@ -1,5 +1,17 @@
-import { defineMiddlewares, validateAndTransformBody, validateAndTransformQuery, authenticate, applyDefaultFilters } from "@medusajs/framework/http";
-import { ProductStatus } from "@medusajs/framework/utils"
+import {
+  defineMiddlewares,
+  validateAndTransformBody,
+  validateAndTransformQuery,
+  authenticate,
+  applyDefaultFilters,
+  clearFiltersByKey,
+  applyParamsAsFilters,
+  maybeApplyLinkFilter,
+  MiddlewareRoute
+} from "@medusajs/framework/http";
+
+import { filterByValidSalesChannels, normalizeDataForContext, setPricingContext, setTaxContext } from "@medusajs/medusa/api/utils/middlewares/index"
+import { ProductStatus, FeatureFlag, isPresent } from "@medusajs/framework/utils"
 import { PostBundledProductsSchema } from "./admin/bundled-products/route";
 import { createFindParams } from "@medusajs/medusa/api/utils/validators";
 import { PostCartsBundledLineItemsSchema } from "./store/carts/[id]/line-item-bundles/route";
@@ -17,6 +29,7 @@ import { StoreGetGiftCardParams } from "./store/gift-cards/validators"
 
 import { listProductQueryConfig } from "./store/products-custom-list/filtered/query-config"
 import { StoreGetProductsParams } from "./store/products-custom-list/filtered/validators"
+import { IndexEngineFeatureFlag } from "../modules/product-custom-list/utils/types"
 
 import { z } from "zod";
 
@@ -135,13 +148,46 @@ export default defineMiddlewares({
       matcher: "/store/products-custom-list/filtered",
       method: "GET",
       middlewares: [
-        authenticate("customer", ["session", "bearer"], {
-          allowUnauthenticated: true,
+        authenticate("customer", ["session", "bearer"], { 
+          allowUnauthenticated: true 
         }),
         validateAndTransformQuery(StoreGetProductsParams, listProductQueryConfig),
+        filterByValidSalesChannels(),
+        (req, res, next) => {
+          const canUseIndex = !(
+            isPresent(req.filterableFields.tags) ||
+            isPresent(req.filterableFields.categories)
+          )
+          if (
+            FeatureFlag.isFeatureEnabled(IndexEngineFeatureFlag.key) &&
+            canUseIndex
+          ) {
+            return next()
+          }
+
+          return maybeApplyLinkFilter({
+            entryPoint: "product_sales_channel",
+            resourceId: "product_id",
+            filterableField: "sales_channel_id",
+          })(req, res, next)
+        },
         applyDefaultFilters({
           status: ProductStatus.PUBLISHED,
+          categories: (filters: any, fields: string[]) => {
+            const categoryIds = filters.category_id
+            delete filters.category_id
+
+            if (!isPresent(categoryIds)) {
+              return
+            }
+
+            return { id: categoryIds, is_internal: false, is_active: true }
+          },
         }),
+        normalizeDataForContext(),
+        setPricingContext(),
+        setTaxContext(),
+        clearFiltersByKey(["region_id", "country_code", "province", "cart_id"]),
       ],
     },
   ]
