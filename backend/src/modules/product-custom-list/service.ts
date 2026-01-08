@@ -187,7 +187,7 @@ export default class ProductCustomListService extends AbstractFileProviderServic
         const titles = Object.keys(optionByTitle).filter(Boolean)
         const values = Object.values(optionByTitle).filter(Boolean).flat(1)
 
-        
+
         if (!titles.length || !values.length) return []
 
         // fetch option ids by title

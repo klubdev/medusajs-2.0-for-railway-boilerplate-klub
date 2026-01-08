@@ -36,9 +36,6 @@ const OptionSchema = z.record(z.union([
     z.array(z.string())
 ])).optional()
 
-
-
-
 export type StoreGetProductParamsType = z.infer<typeof StoreGetProductParams>
 
 export const StoreGetProductParams = createSelectParams().merge(
