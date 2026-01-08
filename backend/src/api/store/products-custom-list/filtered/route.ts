@@ -196,7 +196,6 @@ async function getProducts(
     }
 
     if (isCustomOrder) {
-        console.log('is going to price')
         filteredAndSorted = sortedProducts(filteredAndSorted, orderBy as any, filters?.category_id)
     }
 
