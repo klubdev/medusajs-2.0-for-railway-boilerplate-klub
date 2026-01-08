@@ -192,7 +192,7 @@ async function getProducts(
 
     let filteredAndSorted = products
     if (priceMin !== undefined || priceMax !== undefined) {
-        filteredAndSorted = filterByPrice(filteredAndSorted)
+        filteredAndSorted = filterByPrice(filteredAndSorted, priceMin, priceMax)
     }
 
     if (isCustomOrder) {
