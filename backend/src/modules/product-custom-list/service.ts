@@ -70,6 +70,51 @@ export default class ProductCustomListService extends AbstractFileProviderServic
         return Object.keys(result).length ? result : null
     }
 
+    async getProductsFilteredByPrice(params?: {
+        price_min: number,
+        price_max: number,
+        currency_code: string[] | string,
+        categoryIds?: string[] | string
+        collectionIds?: string[] | string,
+    }): Promise<string[] | null> {
+
+        const categoryIds = params?.categoryIds
+            ? (Array.isArray(params.categoryIds) ? params.categoryIds : [params.categoryIds])
+            : []
+
+        const currencyCodes = params?.currency_code
+            ? (Array.isArray(params.currency_code) ? params.currency_code : [params.currency_code])
+            : []
+
+        const collectionIds = params?.collectionIds
+            ? (Array.isArray(params.collectionIds) ? params.collectionIds : [params.collectionIds])
+            : []
+
+        const qb = this.pgConnection("product as p")
+            .distinct("p.id")
+            .leftJoin("product_variant as pv", "pv.product_id", "p.id")
+            .leftJoin("product_variant_price_set as pvps", "pvps.variant_id", "pv.id")
+            .leftJoin("price as pr", "pr.price_set_id", "pvps.price_set_id")
+            .where("p.status", "published")
+            .whereBetween("pr.amount", [params.price_min, params.price_max]);
+
+        if (currencyCodes.length) {
+            qb.whereIn("pr.currency_code", currencyCodes);
+        }
+
+        if (collectionIds.length) {
+            qb.whereIn("p.collection_id", collectionIds)
+        }
+
+        if (categoryIds.length) {
+            qb.leftJoin("product_category_product as pcp", "pcp.product_id", "p.id")
+                .whereIn("pcp.product_category_id", categoryIds)
+        }
+
+        const rows = await qb;
+        return rows.map(r => r.id);
+    }
+
     async getProductMetadataFilterValues(
         fields: string[] = ["color", "package", "season", "year"],
         params?: {

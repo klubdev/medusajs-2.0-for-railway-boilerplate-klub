@@ -6,7 +6,6 @@ interface MinPricedProduct extends HttpTypes.StoreProduct {
     _minPrice?: number
 }
 
-
 export const normalizeRecord = (input: any): Record<string, string | string[]> => {
     if (!input || typeof input !== "object") return {}
     const out: Record<string, string | string[]> = {}
@@ -78,24 +77,6 @@ export const sortedProducts = (
     }
 
     return sorted
-}
-
-
-export const filterByPrice = (products: HttpTypes.StoreProduct[], priceMin: number = 0, priceMax: number = 0): HttpTypes.StoreProduct[] => {
-    return products.filter((p: any) => {
-        const amounts: number[] = (p.variants ?? [])
-            .map((v: any) => v?.calculated_price?.calculated_amount)
-            .filter((n: any) => typeof n === "number")
-
-        if (!amounts.length) return false
-
-        const min = Math.min(...amounts)
-
-        if (priceMin !== undefined && min < priceMin) return false
-        if (priceMax !== undefined && min > priceMax) return false
-
-        return true
-    })
 }
 
 export const getOrderKey = (order: any) => {

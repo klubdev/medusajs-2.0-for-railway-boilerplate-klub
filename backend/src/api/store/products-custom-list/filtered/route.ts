@@ -9,7 +9,7 @@ import {
 } from "@medusajs/framework/utils"
 import { RequestWithContext, wrapProductsWithTaxPrices } from "@medusajs/medusa/api/store/products/helpers"
 import { wrapVariantsWithInventoryQuantityForSalesChannel } from "@medusajs/medusa/api/utils/middlewares/index"
-import { normalizeRecord, toNumberOrUndefined, sortedProducts, filterByPrice, getOrderKey } from "../../../../modules/product-custom-list/helpers"
+import { normalizeRecord, toNumberOrUndefined, sortedProducts, getOrderKey } from "../../../../modules/product-custom-list/helpers"
 import { STORE_PRODUCT_CUSTOM_LIST_SERVICE } from "../../../../modules/product-custom-list"
 import { IndexEngineFeatureFlag } from "../../../../modules/product-custom-list/utils/types"
 
@@ -93,6 +93,8 @@ async function getProducts(
     res: MedusaResponse<HttpTypes.StoreProductListResponse>
 ) {
 
+    const svc = req.scope.resolve(STORE_PRODUCT_CUSTOM_LIST_SERVICE) as any
+
     const filters: Record<string, any> = {
         ...(req as any).filterableFields
     }
@@ -139,9 +141,7 @@ async function getProducts(
     }
 
     if (Object.keys(optionByTitle).length) {
-        const svc = req.scope.resolve(STORE_PRODUCT_CUSTOM_LIST_SERVICE) as any
         const optionFilters = await svc.mapOptionTitlesToOptionIdValue(optionByTitle)
-
         const uniq = Array.from(
             new Map(optionFilters.map((f: any) => [`${f.option_id}:${f.value}`, f])).values()
         )
@@ -159,6 +159,18 @@ async function getProducts(
     if (isPresent(req.pricingContext)) {
         context["variants.calculated_price"] = {
             context: req.pricingContext,
+        }
+
+        if (priceMin !== undefined || priceMax !== undefined) {
+            const ids = await svc.getProductsFilteredByPrice({
+                price_min: priceMin,
+                price_max: priceMax,
+                currency_code: req.pricingContext?.currency_code ?? 'eur',
+                categoryIds: filters?.category_id,
+                collectionIds: filters?.collection_id,
+            })
+
+            if (ids) filters.id = ids; 
         }
     }
 
@@ -190,18 +202,14 @@ async function getProducts(
 
     await wrapProductsWithTaxPrices(req, products)
 
-    let filteredAndSorted = products
-    if (priceMin !== undefined || priceMax !== undefined) {
-        filteredAndSorted = filterByPrice(filteredAndSorted, priceMin, priceMax)
-    }
-
+    let sorted = products
     if (isCustomOrder) {
-        filteredAndSorted = sortedProducts(filteredAndSorted, orderBy as any, filters?.category_id)
+        sorted = sortedProducts(sorted, orderBy as any, filters?.category_id)
     }
 
     res.json({
-        products: filteredAndSorted,
-        count: (priceMin !== undefined || priceMax !== undefined) ? filteredAndSorted.length : meta?.count ?? filteredAndSorted.length,
+        products: sorted,
+        count: meta?.count,
         offset: meta.skip,
         limit: meta.take,
     })
