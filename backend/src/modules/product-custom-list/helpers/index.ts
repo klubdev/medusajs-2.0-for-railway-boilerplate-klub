@@ -51,12 +51,28 @@ export const sortedProducts = (
     const sorted = products as MinPricedProduct[]
 
     const getCatOrder = (p: any) => {
-        const orders = (p.categories ?? [])
-            .filter((c: any) => (category_id ? c?.mpath?.includes(category_id) : true))
-            .map((c: any) => Number(c?.metadata?.order))
-            .filter(Number.isFinite)
+        const cats = (p?.categories ?? [])
+            .filter((c: any) => {
+                if (!category_id) return true
+                const segs = String(c?.mpath ?? "").split(".")
+                return segs.includes(category_id)
+            })
+            .filter((c: any) => Number.isFinite(Number(c?.metadata?.order)))
 
-        return orders.length ? Math.min(...orders) : Infinity
+        if (!cats.length) return Infinity
+
+        let deepest = cats[0]
+        let bestDepth = String(deepest?.mpath ?? "").split(".").length
+
+        for (const c of cats) {
+            const depth = String(c?.mpath ?? "").split(".").length
+            if (depth > bestDepth) {
+                bestDepth = depth
+                deepest = c
+            }
+        }
+
+        return Number(deepest?.metadata?.order ?? Infinity)
     }
 
     if (sortBy === "category") {

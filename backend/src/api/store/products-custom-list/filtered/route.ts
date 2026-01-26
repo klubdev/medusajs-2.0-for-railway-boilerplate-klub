@@ -154,7 +154,7 @@ async function getProducts(
                 },
             },
         }))
-    }
+    }   
 
     if (isPresent(req.pricingContext)) {
         context["variants.calculated_price"] = {
@@ -166,7 +166,7 @@ async function getProducts(
                 price_min: priceMin,
                 price_max: priceMax,
                 currency_code: req.pricingContext?.currency_code ?? 'eur',
-                categoryIds: filters?.category_id,
+                categoryIds: filters?.categories?.id,
                 collectionIds: filters?.collection_id,
             })
 
@@ -204,7 +204,7 @@ async function getProducts(
 
     let sorted = products
     if (isCustomOrder) {
-        sorted = sortedProducts(sorted, orderBy as any, filters?.category_id)
+        sorted = sortedProducts(sorted, orderBy as any, filters?.categories?.id)
     }
 
     res.json({
