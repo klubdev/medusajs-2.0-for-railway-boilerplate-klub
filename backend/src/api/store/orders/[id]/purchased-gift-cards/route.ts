@@ -15,7 +15,7 @@ export async function GET(
     }
 
     const query = req.scope.resolve("query")
-    const { data: gift_cards, } = await query.graph({
+    const { data: giftCards, } = await query.graph({
         entity: "gift_cards",
         fields: req.queryConfig.fields,
         filters: {
@@ -25,12 +25,22 @@ export async function GET(
         throwIfKeyNotFound: false
     });
 
-    if (!gift_cards) {
+    if (!giftCards) {
         throw new MedusaError(
             MedusaError.Types.NOT_FOUND,
             `No gift cards found by order id ${id}`
         )
     }
 
-    res.json({ gift_cards });
+    const sorted = (giftCards || []).slice().sort((a, b) => {
+        const liA = (a as { line_item_id?: string | null }).line_item_id ?? ""
+        const liB = (b as { line_item_id?: string | null }).line_item_id ?? ""
+        if (liA !== liB) return liA.localeCompare(liB)
+        const tA = String((a as { created_at?: unknown }).created_at ?? "")
+        const tB = String((b as { created_at?: unknown }).created_at ?? "")
+        return tA.localeCompare(tB)
+    })
+
+
+    res.json({ gift_cards: sorted });
 }

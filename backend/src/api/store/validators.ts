@@ -1,5 +1,6 @@
 import {
   createFindParams,
+  createSelectParams
 } from "@medusajs/medusa/api/utils/validators";
 import { z } from "zod";
 
@@ -15,3 +16,5 @@ export const CreateQuote = z
     cart_id: z.string().min(1),
   })
   .strict();
+
+export const StoreGetGiftCardParams = createSelectParams();

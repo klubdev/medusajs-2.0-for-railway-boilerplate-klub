@@ -5,9 +5,7 @@ import {
   authenticate,
   applyDefaultFilters,
   clearFiltersByKey,
-  applyParamsAsFilters,
-  maybeApplyLinkFilter,
-  MiddlewareRoute
+  maybeApplyLinkFilter
 } from "@medusajs/framework/http";
 
 import { filterByValidSalesChannels, normalizeDataForContext, setPricingContext, setTaxContext } from "@medusajs/medusa/api/utils/middlewares/index"
@@ -24,8 +22,8 @@ import { listStoreQuoteQueryConfig } from "./store/customers/me/quotes/query-con
 import { PostInvoiceConfgSchema } from "./admin/invoice-config/route"
 import { PostStoreCreateWishlistItem } from "./store/customers/me/wishlists/items/validators"
 
-import { retrieveGiftCardTransformQueryConfig } from "./store/gift-cards/query-config"
-import { StoreGetGiftCardParams } from "./store/gift-cards/validators"
+import { retrieveGiftCardTransformQueryConfig } from "./store/orders/[id]/purchased-gift-cards/query-config"
+import { StoreGetGiftCardParams } from "../api/store/validators"
 
 import { listProductQueryConfig } from "./store/products-custom-list/filtered/query-config"
 import { StoreGetProductsParams } from "./store/products-custom-list/filtered/validators"
@@ -138,7 +136,7 @@ export default defineMiddlewares({
       ],
     },
     {
-      matcher: "/store/gift-cards/order/:id",
+      matcher: "/store/order/:id/purchased-gift-cards",
       method: "GET",
       middlewares: [
         validateAndTransformQuery(StoreGetGiftCardParams, retrieveGiftCardTransformQueryConfig),
@@ -148,8 +146,8 @@ export default defineMiddlewares({
       matcher: "/store/products-custom-list/filtered",
       method: "GET",
       middlewares: [
-        authenticate("customer", ["session", "bearer"], { 
-          allowUnauthenticated: true 
+        authenticate("customer", ["session", "bearer"], {
+          allowUnauthenticated: true
         }),
         validateAndTransformQuery(StoreGetProductsParams, listProductQueryConfig),
         filterByValidSalesChannels(),
