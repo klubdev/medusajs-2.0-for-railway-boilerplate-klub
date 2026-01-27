@@ -19,7 +19,8 @@ export async function GET(
         entity: "gift_cards",
         fields: req.queryConfig.fields,
         filters: {
-            reference_id: id
+            reference_id: id,
+            reference: "order",
         },
     }, {
         throwIfKeyNotFound: false
