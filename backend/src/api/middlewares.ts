@@ -136,7 +136,7 @@ export default defineMiddlewares({
       ],
     },
     {
-      matcher: "/store/order/:id/purchased-gift-cards",
+      matcher: "/store/orders/:id/purchased-gift-cards",
       method: "GET",
       middlewares: [
         validateAndTransformQuery(StoreGetGiftCardParams, retrieveGiftCardTransformQueryConfig),
