@@ -30,16 +30,16 @@ const OrderInvoiceNotificationWidget = ({
 
   return (
     <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <div>
+      <Text as="div" className="flex items-center justify-between px-6 py-4">
+        <Text as="div">
           <Heading level="h2">Notifications</Heading>
           <Text size="small" className="text-ui-fg-subtle">
             Resend confirmation to customer
           </Text>
-        </div>
-      </div>
+        </Text>
+      </Text>
 
-      <div className="flex items-center justify-end px-6 py-4">
+      <Text as="div" className="flex items-center justify-end px-6 py-4">
         <Button
           variant="secondary"
           disabled={isSending}
@@ -48,7 +48,7 @@ const OrderInvoiceNotificationWidget = ({
         >
           Resend confirmation
         </Button>
-      </div>
+      </Text>
     </Container>
   );
 };

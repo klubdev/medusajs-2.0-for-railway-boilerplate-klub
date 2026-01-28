@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { defineWidgetConfig } from "@medusajs/admin-sdk";
-import { DetailWidgetProps, AdminProduct } from "@medusajs/framework/types";
+import { AdminProduct, DetailWidgetProps } from "@medusajs/framework/types";
 
 import {
   clx,
@@ -104,7 +104,7 @@ const ProductBrandWidgetEdit = ({
 
         <Drawer.Body>
           <Label htmlFor="name">Brand Name</Label>
-          <div className="mt-2">
+          <Text as="div" className="mt-2">
             <Select
               disabled={brands.length == 0}
               onValueChange={setBrandId}
@@ -121,7 +121,7 @@ const ProductBrandWidgetEdit = ({
                 ))}
               </Select.Content>
             </Select>
-          </div>
+          </Text>
         </Drawer.Body>
         <Drawer.Footer>
           <Drawer.Close asChild>
@@ -164,7 +164,7 @@ const ProductBrandWidget = ({
       </div>
       <div
         className={clx(
-          `text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4`
+          `text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4`,
         )}
       >
         {JSON.stringify(product.brand)}

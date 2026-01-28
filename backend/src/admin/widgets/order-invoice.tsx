@@ -40,16 +40,16 @@ const OrderInvoiceWidget = ({ data: order }: DetailWidgetProps<AdminOrder>) => {
 
   return (
     <Container className="divide-y p-0">
-      <div className="flex items-center justify-between px-6 py-4">
-        <div>
+      <Text as="div" className="flex items-center justify-between px-6 py-4">
+        <Text as="div">
           <Heading level="h2">Invoice</Heading>
           <Text size="small" className="text-ui-fg-subtle">
             Generate and download invoice for this order
           </Text>
-        </div>
-      </div>
+        </Text>
+      </Text>
 
-      <div className="flex items-center justify-end px-6 py-4">
+      <Text as="div" className="flex items-center justify-end px-6 py-4">
         <Button
           variant="secondary"
           disabled={isDownloading}
@@ -58,7 +58,7 @@ const OrderInvoiceWidget = ({ data: order }: DetailWidgetProps<AdminOrder>) => {
         >
           Download Invoice
         </Button>
-      </div>
+      </Text>
     </Container>
   );
 };

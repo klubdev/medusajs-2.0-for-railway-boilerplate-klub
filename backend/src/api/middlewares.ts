@@ -29,6 +29,8 @@ import { listProductQueryConfig } from "./store/products-custom-list/filtered/qu
 import { StoreGetProductsParams } from "./store/products-custom-list/filtered/validators"
 import { IndexEngineFeatureFlag } from "../modules/product-custom-list/utils/types"
 
+import { GiftCardTemplatesRequestSchema } from "./admin/purchased-gift-cards-templates/route"
+
 import { z } from "zod";
 
 export const GetBrandsSchema = createFindParams()
@@ -133,6 +135,33 @@ export default defineMiddlewares({
       method: "POST",
       middlewares: [
         validateAndTransformBody(PostStoreCreateWishlistItem),
+      ],
+    },
+    {
+      matcher: "/admin/purchased-gift-cards-templates",
+      method: "POST",
+      middlewares: [
+        validateAndTransformBody(GiftCardTemplatesRequestSchema),
+        authenticate("customer", ["session", "bearer"], {
+          allowUnauthenticated: true
+        }),
+      ],
+    },
+    {
+      matcher: "/store/orders/:id/purchased-gift-cards-templates",
+      method: "POST",
+      middlewares: [
+        validateAndTransformBody(GiftCardTemplatesRequestSchema),
+        authenticate("customer", ["session", "bearer"], {
+          allowUnauthenticated: true
+        }),
+      ],
+    },
+    {
+      matcher: "/admin/orders/:id/purchased-gift-cards",
+      method: "GET",
+      middlewares: [
+        validateAndTransformQuery(StoreGetGiftCardParams, retrieveGiftCardTransformQueryConfig),
       ],
     },
     {

@@ -31,7 +31,7 @@ export async function GET(
             MedusaError.Types.NOT_FOUND,
             `No gift cards found by order id ${id}`
         )
-    }
+    }   
     
     res.json({ gift_cards });
 }
