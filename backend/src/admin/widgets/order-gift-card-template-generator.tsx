@@ -57,11 +57,11 @@ const OrderGiftCardTemplateGenerator = ({
 
   const rows: GiftCardLineItem[] = extractGiftCards(order, data?.gift_cards);
 
-  const geenrateTemplates = async () => {
+  const generateTemplates = async () => {
     if (!rows?.length) return null;
     setGenerated(true);
     try {
-      const results = await sdk.client.fetch<GiftCardTemplatesResponse[]>(
+      await sdk.client.fetch<GiftCardTemplatesResponse[]>(
         "/admin/purchased-gift-cards-templates",
         {
           method: "POST",
@@ -80,37 +80,6 @@ const OrderGiftCardTemplateGenerator = ({
           },
         },
       );
-
-      if (results?.results.length) {
-        const byCard = new Map<
-          string,
-          Array<{ template_id: string; url: string }>
-        >();
-
-        for (const r of results?.results) {
-          const arr = byCard.get(r.card_id) ?? [];
-          arr.push({
-            template_id: r.template_id,
-            url: r.url,
-          });
-
-          byCard.set(r.card_id, arr);
-        }
-
-        for (const [cardId, renders] of byCard.entries()) {
-          await sdk.client.fetch(`/admin/gift-cards/${cardId}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: {
-              metadata: {
-                template_urls: renders,
-              },
-            },
-          });
-        }
-      }
 
       await refetch();
       toast.success("Gift card templates generated and saved");
@@ -137,7 +106,7 @@ const OrderGiftCardTemplateGenerator = ({
               isLoading={generated}
               variant="primary"
               size="small"
-              onClick={() => geenrateTemplates()}
+              onClick={() => generateTemplates()}
             >
               Generate Templates
             </Button>
@@ -217,7 +186,7 @@ const OrderGiftCardTemplateGenerator = ({
                       >
                         {row.card_metadata.template_urls.map(
                           (item: TemplateUrlItem) => (
-                            <Text as="div" className="relative w-full w-full">
+                            <Text as="div" key={item.template_id} className="relative w-full w-full">
                               <a
                                 href={item.url}
                                 target="_blank"

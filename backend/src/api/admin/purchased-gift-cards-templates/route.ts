@@ -1,5 +1,6 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { z } from "zod"
+import { generateGiftCardTemplatesWorkflow } from "../../../workflows/generate-gift-card-templates"
 
 export const GiftCardTemplatesConfgSchema = z.object({
   id: z.string(),
@@ -33,100 +34,20 @@ export const POST = async (
     })
   }
 
-  const apiUrl = process.env.MARKUPGO_URL
-  const apiKey = process.env.MARKUPGO_KEY
-  const templates = process.env.MARKUPGO_TEMPLATES
-
-  if (!apiUrl) {
-    return res.status(500).json({
-      message: "MARKUPGO_URL is not configured. Set it in your environment.",
+  try {
+    const { result } = await generateGiftCardTemplatesWorkflow(req.scope).run({
+      input: {
+        rows: parsed.data.rows,
+      },
     })
-  }
 
-  if (!apiKey) {
-    return res.status(500).json({
-      message: "MARKUPGO_KEY is not configured. Set it in your environment.",
+    return res.json({
+      results: result,
     })
+  } catch (e) {
+    const message =
+      e instanceof Error ? e.message : "Failed to generate gift card templates"
+
+    return res.status(500).json({ message })
   }
-
-  if (!templates) {
-    return res.status(500).json({
-      message:
-        "MARKUPGO_TEMPLATES is not configured. Set it in your environment.",
-    })
-  }
-
-  const options = {
-    properties: { format: "jpeg", quality: 100 },
-  }
-
-  const ids = templates.split(",").map((s) => s.trim()).filter(Boolean)
-  const rows = parsed.data.rows
-
-  const results: Array<{
-    row_id: string
-    card_id: string
-    template_id: string
-    url: string
-  }> = []
-
-  for (const templateId of ids) {
-    for (const row of rows) {
-      const markupResult = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "x-api-key": apiKey,
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          source: {
-            type: "template",
-            data: {
-              id: templateId,
-              context: {
-                cardName: row.title,
-                from: row.from,
-                created_at: row.created_at,
-                expired_at: row.expired_at,
-                amount: row.amount,
-                code: row.code,
-              },
-            },
-          },
-          options,
-        }),
-      })
-
-      if (!markupResult.ok) {
-        const errText = await markupResult.text()
-        return res.status(502).json({
-          message: "MarkupGo request failed",
-          template_id: templateId,
-          row_id: row.id,
-          status: markupResult.status,
-          details: errText,
-        })
-      }
-
-      const data = await markupResult.json()
-
-      if (!data?.url) {
-        return res.status(502).json({
-          message: "MarkupGo response missing url",
-          template_id: templateId,
-          row_id: row.id,
-          response: data,
-        })
-      }
-
-      results.push({
-        row_id: row.id,
-        card_id: row.card_id,
-        template_id: templateId,
-        url: data.url,
-      })
-    }
-  }
-
-  return res.json({ results })
 }
