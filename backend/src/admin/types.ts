@@ -33,9 +33,9 @@ export type AdminQuotesResponse = PaginatedResponse<{
 
 export type GiftCardLineItem = {
   id: string
-  thumbnail: string
+  preview: string
   title: string
-  unit_price: string
+  unit_price: string | number
   unit_price_formatted: string
   from: string
   card_id: string
@@ -45,6 +45,7 @@ export type GiftCardLineItem = {
   card_created_at: string
   card_expires_at: string
   card_status: "pending" | "redeemed" | string
+  card_metadata: Record<string, unknown>
 }
 
 export type PurchasedGiftCardResponse = {

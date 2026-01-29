@@ -51,8 +51,8 @@ export const extractGiftCards = (order: AdminOrder, cards: PurchasedGiftCardResp
         for (let i = 0; i < qty; i++) {
             rows.push({
                 id: item?.id,
+                preview: item?.thumbnail ?? "",
                 title: item?.title,
-                preview: item?.thumbnail,
                 unit_price: unitPrice,
                 unit_price_formatted: new Intl.NumberFormat("en-US", {
                     style: "currency",
