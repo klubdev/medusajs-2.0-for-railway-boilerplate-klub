@@ -102,13 +102,13 @@ const OrderGiftCardTemplateGenerator = ({
           <Heading level="h2">Gift Card(s)</Heading>
           <Text as="div" className="flex flex-row gap-4 items-center">
             <Button
-              title="Generate Templates"
+              title="Generate gift card to share"
               isLoading={generated}
               variant="primary"
               size="small"
               onClick={() => generateTemplates()}
             >
-              Generate Templates
+              Generate gift card to share
             </Button>
             <Badge color="grey" size="small">
               {rows.length} card{rows.length !== 1 ? "s" : ""}
@@ -186,7 +186,11 @@ const OrderGiftCardTemplateGenerator = ({
                       >
                         {row.card_metadata.template_urls.map(
                           (item: TemplateUrlItem) => (
-                            <Text as="div" key={item.template_id} className="relative w-full w-full">
+                            <Text
+                              as="div"
+                              key={item.template_id}
+                              className="relative w-full w-full"
+                            >
                               <a
                                 href={item.url}
                                 target="_blank"
