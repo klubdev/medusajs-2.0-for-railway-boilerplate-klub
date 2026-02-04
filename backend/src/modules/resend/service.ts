@@ -15,12 +15,14 @@ import { orderPlacedEmail } from "./emails/order-placed";
 import { userInvitedEmail } from "./emails/user-invited";
 import { passwordResetEmail } from "./emails/password-reset";
 import { customerCreatedEmail } from "./emails/customer-created";
+import { giftCardEmail } from "./emails/gift-card";
 
 enum Templates {
   ORDER_PLACED = "order-placed",
   USER_INVITED = "user-invited",
   PASSWORD_RESET = "password-reset",
-  CUSTOMER_CREATED = "customer-created"
+  CUSTOMER_CREATED = "customer-created",
+  GIFT_CARD = "gift-card"
 }
 
 const templates: { [key in Templates]?: (props: unknown) => React.ReactNode } = {
@@ -28,6 +30,7 @@ const templates: { [key in Templates]?: (props: unknown) => React.ReactNode } = 
   [Templates.USER_INVITED]: userInvitedEmail,
   [Templates.PASSWORD_RESET]: passwordResetEmail,
   [Templates.CUSTOMER_CREATED]: customerCreatedEmail,
+  [Templates.GIFT_CARD]: giftCardEmail,
 }
 
 type ResendOptions = {
@@ -100,6 +103,8 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
         return "Reset Your Password"
       case Templates.CUSTOMER_CREATED:
         return "New Customer Created!"
+      case Templates.GIFT_CARD:
+        return "Your gift card from Bon Beau Joli"
       default:
         return "New Email"
     }
@@ -115,7 +120,7 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       return {}
     }
 
-    const displayId = (notification.data as { order?: { display_id?: string }} )?.order?.display_id;
+    const displayId = (notification.data as { order?: { display_id?: string } })?.order?.display_id;
 
     const subject = notification.template == Templates.ORDER_PLACED ?
       `Order #${displayId} Confirmation | Bon Beau Joli` :
@@ -144,7 +149,7 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
         attachments
       }
     }
-   
+
     const { data, error } = await this.resendClient.emails.send(emailOptions)
 
     if (error || !data) {

@@ -30,6 +30,7 @@ import { StoreGetProductsParams } from "./store/products-custom-list/filtered/va
 import { IndexEngineFeatureFlag } from "../modules/product-custom-list/utils/types"
 
 import { GiftCardTemplatesRequestSchema } from "./admin/purchased-gift-cards-templates/route"
+import { GiftCardInfoConfgSchema } from "./store/orders/[id]/send-gift-card/route"
 
 import { z } from "zod";
 
@@ -157,6 +158,18 @@ export default defineMiddlewares({
         }),
       ],
     },
+
+    {
+      matcher: "/store/orders/:id/send-gift-card",
+      method: "POST",
+      middlewares: [
+        validateAndTransformBody(GiftCardInfoConfgSchema),
+        authenticate("customer", ["session", "bearer"], {
+          allowUnauthenticated: true
+        }),
+      ],
+    },
+
     {
       matcher: "/admin/orders/:id/purchased-gift-cards",
       method: "GET",
