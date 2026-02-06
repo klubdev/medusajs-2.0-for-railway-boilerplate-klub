@@ -9,7 +9,7 @@ import {
   toast,
 } from "@medusajs/ui";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { sdk } from "../../../lib/sdk";
+import { sdk } from "../../lib/sdk";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 import { FormProvider, Controller } from "react-hook-form";
@@ -134,7 +134,7 @@ const InvoiceConfigPage = () => {
                       Company Address
                     </Label>
                   </div>
-                  <Textarea {...field} />
+                  <Textarea {...field} rows={5} />
                 </div>
               );
             }}
@@ -214,7 +214,7 @@ const InvoiceConfigPage = () => {
                       Notes
                     </Label>
                   </div>
-                  <Textarea {...field} />
+                  <Textarea {...field} rows={5} />
                 </div>
               );
             }}
